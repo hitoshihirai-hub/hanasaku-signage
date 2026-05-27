@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>みんなで咲かす未来の街 ツアー</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════════════════════════════════════
+       HOME 画面：スタンプ進捗 ＋ スポット一覧
+  ═══════════════════════════════════════════════ -->
+  <div class="screen" id="screen-home">
+
+    <div class="home-hero">
+      <p class="home-hero__title">みんなで咲かす<br>未来の街 🌸</p>
+      <p class="home-hero__sub">GREEN×EXPO 2027 大阪府ブース</p>
+    </div>
+
+    <!-- スタンプ進捗 -->
+    <div class="stamp-progress">
+      <div class="stamp-progress__bar-wrap">
+        <div class="stamp-progress__bar" id="stamp-progress-bar" style="width:0%"></div>
+      </div>
+      <div class="stamp-progress__label" id="stamp-progress-label">0 / 3 か所</div>
+    </div>
+
+    <!-- スポットカードリスト（JS で生成） -->
+    <div class="spot-list" id="spot-list"></div>
+
+    <!-- 花を送るボタン -->
+    <div class="flower-unlock-area">
+      <button class="btn-flower-unlock" id="btn-to-flower" disabled>
+        あと 3 か所まわろう
+      </button>
+    </div>
+
+  </div><!-- /screen-home -->
+
+
+  <!-- ══════════════════════════════════════════════
+       SPOT 画面：スポット説明 ＋ サブページ
+       メインスポット（01/02/03）とサブページ（04〜11）
+       を共通のコンテナで切替表示する
+  ═══════════════════════════════════════════════ -->
+  <div class="screen" id="screen-spot" hidden>
+    <!-- JS が innerHTML で丸ごと生成する -->
+    <div id="spot-screen-content"></div>
+  </div><!-- /screen-spot -->
+
+
+  <!-- ══════════════════════════════════════════════
+       FLOWER 画面：花の選択 ＋ 送信
+  ═══════════════════════════════════════════════ -->
+  <div class="screen" id="screen-flower" hidden>
+
+    <header class="page-header" style="background:#8C5A3D">
+      <a class="page-header__back" href="?" aria-label="一覧に戻る">←</a>
+      <span class="page-header__title">花を選ぼう 🌸</span>
+    </header>
+
+    <div class="flower-preview-wrap" id="flower-preview"></div>
+
+    <form id="flower-form">
+      <div class="flower-section">
+        <p class="section-label">色を選ぶ</p>
+        <div class="color-buttons" id="color-buttons"></div>
+      </div>
+      <div class="flower-section">
+        <p class="section-label">花の種類を選ぶ</p>
+        <div class="kind-buttons" id="kind-buttons"></div>
+      </div>
+      <div class="flower-section">
+        <p class="section-label">ひとこと（任意）</p>
+        <textarea
+          id="flower-message"
+          class="message-input"
+          rows="2"
+          maxlength="50"
+          placeholder="例：また来たい、きれいだった…"
+        ></textarea>
+        <p class="message-hint">50文字以内</p>
+      </div>
+      <p class="submit-error" id="submit-error" hidden></p>
+      <button type="submit" class="btn-submit" id="btn-submit">
+        花を送る 🌸
+      </button>
+    </form>
+
+  </div><!-- /screen-flower -->
+
+
+  <!-- ══════════════════════════════════════════════
+       THANKS 画面：送信完了 ＋ 花の表示
+  ═══════════════════════════════════════════════ -->
+  <div class="screen" id="screen-thanks" hidden>
+    <div class="thanks-body">
+      <p class="thanks-title">あなたの花が<br>咲きました！</p>
+      <p class="thanks-sub">もうすぐサイネージの街に届きます</p>
+      <div class="thanks-flower-wrap" id="thanks-flower"></div>
+      <p class="thanks-message" id="thanks-message" hidden></p>
+      <p class="thanks-note">
+        🌿 ゴール地点のサイネージを見てみよう。<br>
+        数分後、あなたの花が「みんなの街」に咲きます。
+      </p>
+      <button class="btn-again" id="btn-again">もう一度はじめから</button>
+    </div>
+  </div><!-- /screen-thanks -->
+
+</div><!-- /page -->
+
+<script src="config.js"></script>
+<script src="js/stamp.js"></script>
+<script src="js/flower.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

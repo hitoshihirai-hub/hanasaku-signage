@@ -1,0 +1,569 @@
+/* モバイルツアーページ
+   スマホ縦持ち（最大幅 480px）基準。display と同じウォームトーン。 */
+
+:root {
+  --warm-paper:     #FFF5E1;
+  --warm-ink:       #5A3E2B;
+  --warm-ink-soft:  #8C6A4E;
+  --warm-accent:    #E8965A;
+  --warm-leaf:      #5C8A3A;
+  --warm-border:    #D4B89A;
+  --warm-btn-bg:    #8C5A3D;
+  --warm-btn-text:  #FFF5E1;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: #EDE0D0;
+  min-height: 100%;
+  /* 本文：読みやすさ優先の Noto Sans JP */
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--warm-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 見出し・ボタンなど温かみを出す箇所は Klee One・太字 */
+.home-hero__title,
+.main-spot-hero__name,
+.spot-card__name,
+.page-header__title,
+.sign-quiz__title,
+.sign-detail__titlebar,
+.sign-challenge__titlebar,
+.section-label,
+.thanks-title,
+.btn-flower-unlock,
+.btn-stamp,
+.stamp-msg-inline,
+.feature-card__title,
+.child-links__label {
+  font-family: "Klee One", "Hiragino Maru Gothic ProN", sans-serif;
+  font-weight: 700;
+}
+
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--warm-paper);
+  min-height: 100vh;
+  padding-bottom: 48px;
+}
+
+.screen[hidden] { display: none; }
+
+/* ─── ページヘッダ（戻るボタン付き） ─────────────────── */
+.page-header {
+  color: #fff;
+  padding: 16px 20px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.page-header__back {
+  font-size: 24px;
+  text-decoration: none;
+  color: #fff;
+  line-height: 1;
+  padding: 4px 8px 4px 0;
+}
+.page-header__title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── HOME ───────────────────────────────────────── */
+.home-hero {
+  background: linear-gradient(160deg, #B5DAEC 0%, #D4EAC0 100%);
+  padding: 32px 24px 28px;
+  text-align: center;
+}
+.home-hero__title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #4A3020;
+  line-height: 1.55;
+  margin: 0 0 6px;
+}
+.home-hero__sub {
+  font-size: 13px;
+  color: #5A4030;
+  margin: 0;
+}
+
+.stamp-progress {
+  padding: 18px 24px 6px;
+}
+.stamp-progress__bar-wrap {
+  background: #E8D4B8;
+  border-radius: 99px;
+  height: 12px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.stamp-progress__bar {
+  height: 100%;
+  background: var(--warm-accent);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+.stamp-progress__label {
+  text-align: right;
+  font-size: 13px;
+  color: var(--warm-ink-soft);
+}
+
+.spot-list {
+  padding: 4px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.spot-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 2px solid var(--warm-border);
+  border-left: 6px solid var(--spot-accent, #A8C97A);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--warm-ink);
+  transition: box-shadow 0.15s;
+}
+.spot-card:active { box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+.spot-card--done  { opacity: 0.7; }
+.spot-card__icon  { font-size: 30px; flex-shrink: 0; }
+.spot-card__body  { flex: 1; min-width: 0; }
+.spot-card__no    { font-size: 11px; color: var(--warm-ink-soft); margin-bottom: 2px; }
+.spot-card__name  { font-size: 17px; font-weight: 600; }
+.spot-card__sub   { font-size: 12px; color: var(--warm-ink-soft); margin-top: 2px;
+                    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spot-card__stamp { font-size: 22px; flex-shrink: 0; }
+
+.flower-unlock-area { padding: 16px 24px 8px; }
+.btn-flower-unlock {
+  width: 100%;
+  padding: 16px;
+  font-size: 17px;
+  font-family: inherit;
+  font-weight: 600;
+  background: var(--warm-btn-bg);
+  color: var(--warm-btn-text);
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-flower-unlock:disabled { background: #C0A888; cursor: default; }
+.btn-flower-unlock:not(:disabled):active { transform: scale(0.97); }
+
+/* ─── メインスポット（01/02/03） ─────────────────────── */
+.main-spot-hero {
+  padding: 24px 24px 20px;
+  text-align: center;
+}
+.main-spot-hero__signno {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--warm-ink-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.main-spot-hero__icon { font-size: 44px; }
+.main-spot-hero__name {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 6px 0 4px;
+  line-height: 1.3;
+}
+.main-spot-hero__sub {
+  font-size: 13px;
+  color: var(--warm-ink-soft);
+  line-height: 1.5;
+}
+
+.main-spot-body { padding: 16px 20px 4px; }
+.main-spot-lead {
+  font-size: 15.5px;
+  line-height: 2.0;
+  color: var(--warm-ink);
+  background: #fff;
+  border: 1.5px solid var(--warm-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0 0 12px;
+}
+
+.feature-card {
+  background: #fff;
+  border: 1.5px solid var(--warm-border);
+  border-left: 4px solid var(--warm-accent);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.feature-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.feature-card__text {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--warm-ink-soft);
+  margin: 0;
+}
+
+/* サブページリンク */
+.child-links {
+  padding: 4px 20px 8px;
+}
+.child-links__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--warm-ink-soft);
+  letter-spacing: 0.06em;
+  margin: 8px 0 6px;
+}
+.child-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1.5px solid var(--warm-border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: var(--warm-ink);
+  transition: background 0.15s;
+}
+.child-link:active { background: #F0E8D8; }
+.child-link__badge {
+  font-size: 10px;
+  background: var(--warm-ink-soft);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 99px;
+  flex-shrink: 0;
+}
+.child-link__no {
+  font-size: 11px;
+  color: var(--warm-ink-soft);
+  flex-shrink: 0;
+}
+.child-link__title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+}
+.child-link__arrow {
+  font-size: 20px;
+  color: var(--warm-ink-soft);
+}
+
+/* スタンプ */
+.stamp-area { padding: 16px 24px 8px; }
+.btn-stamp {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  font-size: 18px;
+  font-family: inherit;
+  font-weight: 600;
+  background: var(--warm-leaf);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.btn-stamp:active { transform: scale(0.96); }
+.stamp-msg-inline {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--warm-leaf);
+  padding: 16px 0 4px;
+  margin: 0;
+}
+
+.btn-back-home {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  color: var(--warm-ink-soft);
+  font-size: 15px;
+  text-decoration: none;
+}
+
+/* ─── 詳細説明（05/06/08/09/10） ────────────────────── */
+.sign-detail { }
+.sign-detail__titlebar {
+  padding: 14px 20px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.sign-detail__body {
+  padding: 16px 20px;
+}
+.sign-detail__photo {
+  background: #DDD;
+  border-radius: 10px;
+  padding: 32px 16px;
+  text-align: center;
+  margin-bottom: 14px;
+  color: #666;
+  font-size: 13px;
+}
+.sign-detail__photo-label::before { content: ""; }
+.sign-detail__text {
+  font-size: 15.5px;
+  line-height: 2.05;
+  margin: 0;
+}
+
+/* ─── クイズ（04）・クイズのこたえ（11） ─────────────── */
+.sign-quiz { }
+.sign-quiz__header {
+  padding: 20px 20px 16px;
+  color: #fff;
+  position: relative;
+  /* 下部に波型の切り取り効果 */
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
+  padding-bottom: 36px;
+}
+.sign-quiz__badge {
+  display: inline-block;
+  background: #fff;
+  color: #CC2200;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.sign-quiz__title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.sign-quiz__body {
+  padding: 20px 20px 8px;
+}
+.sign-quiz__question {
+  font-size: 19px;
+  line-height: 2.0;
+  text-align: center;
+  margin: 0 0 20px;
+  color: var(--warm-ink);
+  font-weight: 500;
+}
+.sign-quiz__hint {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  padding: 14px 20px;
+  border-radius: 99px;
+  margin: 0 auto;
+  max-width: 260px;
+}
+
+/* クイズのこたえ */
+.sign-quiz-answer__answer {
+  padding: 20px;
+  margin-bottom: 2px;
+  /* 上部の波 */
+  clip-path: polygon(0 15%, 50% 0%, 100% 15%, 100% 100%, 0 100%);
+  padding-top: 36px;
+}
+.sign-quiz-answer__text {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+}
+.sign-quiz-answer__explanation {
+  padding: 4px 20px 20px;
+}
+.sign-quiz-answer__line {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0 0 8px;
+}
+
+/* ─── チャレンジ（07 枯山水） ────────────────────────── */
+.sign-challenge { }
+.sign-challenge__titlebar {
+  padding: 14px 20px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.sign-challenge__body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sign-challenge__accent {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.7;
+  padding: 20px;
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.sign-challenge__text {
+  font-size: 15.5px;
+  line-height: 2.05;
+  margin: 0;
+}
+
+/* ─── 共通 ───────────────────────────────────────── */
+.sign-note {
+  font-size: 12px;
+  color: var(--warm-ink-soft);
+  text-align: center;
+  padding: 12px 20px 4px;
+  margin: 0;
+}
+.error {
+  text-align: center;
+  color: #C04040;
+  padding: 24px;
+  font-size: 14px;
+}
+
+/* ─── FLOWER ─────────────────────────────────────── */
+.flower-section { padding: 16px 24px 4px; }
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warm-ink-soft);
+  margin: 0 0 10px;
+  letter-spacing: 0.06em;
+}
+.flower-preview-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+}
+.flower-preview-wrap svg {
+  filter: drop-shadow(0 4px 12px rgba(140,90,60,0.2));
+}
+.color-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.color-btn {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s, border-color 0.15s;
+  overflow: hidden;
+}
+.color-btn.selected { border-color: var(--warm-ink); transform: scale(1.12); }
+.color-btn:active   { transform: scale(0.93); }
+.color-btn__label {
+  position: absolute;
+  bottom: -20px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px; white-space: nowrap;
+  color: var(--warm-ink-soft); pointer-events: none;
+}
+.color-btn[data-color="white"] { border-color: #C0A878; }
+.color-btn[data-color="white"].selected { border-color: var(--warm-ink); }
+.kind-buttons { display: flex; gap: 10px; }
+.kind-btn {
+  flex: 1;
+  padding: 12px 8px;
+  border: 2px solid var(--warm-border);
+  border-radius: 14px;
+  background: #fff;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.kind-btn.selected { border-color: var(--warm-accent); background: #FFF0E0; }
+.kind-btn__emoji { font-size: 26px; }
+.kind-btn__label { font-size: 12px; color: var(--warm-ink); }
+.message-input {
+  width: 100%; padding: 12px 14px;
+  font-size: 16px; font-family: inherit;
+  border: 2px solid var(--warm-border); border-radius: 12px;
+  background: #fff; color: var(--warm-ink);
+  resize: none; outline: none;
+}
+.message-input:focus { border-color: var(--warm-accent); }
+.message-hint { font-size: 12px; color: var(--warm-ink-soft); margin-top: 4px; }
+.btn-submit {
+  display: block;
+  width: calc(100% - 48px);
+  margin: 16px auto 8px;
+  padding: 18px;
+  font-size: 18px; font-family: inherit; font-weight: 600;
+  background: var(--warm-btn-bg); color: var(--warm-btn-text);
+  border: none; border-radius: 16px; cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+.btn-submit:disabled { opacity: 0.55; cursor: default; }
+.btn-submit:not(:disabled):active { transform: scale(0.97); }
+.submit-error { text-align: center; color: #C04040; font-size: 14px; padding: 8px 24px; }
+
+/* ─── THANKS ─────────────────────────────────────── */
+.thanks-body { padding: 32px 24px; text-align: center; }
+.thanks-title { font-size: 26px; font-weight: 600; color: var(--warm-ink); margin: 0 0 6px; }
+.thanks-sub { font-size: 14px; color: var(--warm-ink-soft); margin: 0 0 20px; }
+.thanks-flower-wrap { display: flex; justify-content: center; margin: 8px 0 16px; }
+.thanks-flower-wrap svg {
+  filter: drop-shadow(0 6px 18px rgba(140,90,60,0.25));
+  animation: pop-in 0.6s cubic-bezier(.2,1,.3,1.1) both;
+}
+@keyframes pop-in {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.thanks-message { font-size: 18px; color: var(--warm-ink); margin: 0 0 8px; font-style: italic; }
+.thanks-note {
+  font-size: 13px; color: var(--warm-ink-soft);
+  background: #F0E8D8; border-radius: 10px;
+  padding: 10px 16px; margin: 12px 0 24px; line-height: 1.6;
+}
+.btn-again {
+  display: inline-block;
+  padding: 12px 28px; font-size: 15px; font-family: inherit;
+  background: transparent;
+  border: 2px solid var(--warm-border); border-radius: 99px;
+  color: var(--warm-ink-soft); cursor: pointer;
+  transition: border-color 0.15s;
+}
+.btn-again:hover { border-color: var(--warm-accent); }
