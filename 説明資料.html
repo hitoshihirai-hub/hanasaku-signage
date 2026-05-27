@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>みんなで咲かす未来の街 ― システム説明資料</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+  :root {
+    --brown:      #6B3D1E;
+    --brown-light:#C9986A;
+    --accent:     #E8965A;
+    --green:      #4A7C3A;
+    --blue:       #1E6FA8;
+    --paper:      #FDFAF5;
+    --ink:        #2C1A0A;
+    --ink-soft:   #6B4E35;
+    --border:     #D4B89A;
+    --bg-section: #FFF8F0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.85;
+    color: var(--ink);
+    background: #E8DDD0;
+  }
+
+  /* ─── 印刷設定 ──────────────── */
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; }
+    .no-print { display: none; }
+    h2 { page-break-before: always; }
+    h2:first-of-type { page-break-before: avoid; }
+    .flow-row, .arch-row { page-break-inside: avoid; }
+  }
+
+  /* ─── ページ ─────────────────── */
+  .page {
+    max-width: 794px;         /* A4横幅相当 */
+    margin: 24px auto;
+    background: var(--paper);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* ─── 表紙 ───────────────────── */
+  .cover {
+    background: linear-gradient(150deg, #3B2010 0%, #6B3D1E 55%, #A06030 100%);
+    color: #fff;
+    padding: 64px 64px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: "🌸";
+    position: absolute;
+    right: 48px; bottom: 32px;
+    font-size: 120px;
+    opacity: 0.15;
+  }
+  .cover__label {
+    font-size: 9pt;
+    letter-spacing: 0.18em;
+    color: #D4B89A;
+    margin-bottom: 20px;
+  }
+  .cover__title {
+    font-family: "Noto Serif JP", serif;
+    font-size: 26pt;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 16px;
+  }
+  .cover__sub {
+    font-size: 13pt;
+    color: #E8C8A0;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+  .cover__meta {
+    font-size: 9pt;
+    color: #C0A080;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding-top: 20px;
+    display: flex;
+    gap: 32px;
+  }
+
+  /* ─── 本文エリア ─────────────── */
+  .body {
+    padding: 48px 56px;
+  }
+
+  /* ─── 目次 ───────────────────── */
+  .toc {
+    background: var(--bg-section);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 44px;
+  }
+  .toc__title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--brown);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .toc__list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+  }
+  .toc__list li {
+    font-size: 9.5pt;
+    color: var(--ink-soft);
+    padding: 3px 0;
+    border-bottom: 1px dotted var(--border);
+  }
+  .toc__list li span {
+    color: var(--brown-light);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  /* ─── セクション見出し ───────── */
+  h2 {
+    font-family: "Noto Serif JP", serif;
+    font-size: 15pt;
+    font-weight: 700;
+    color: #fff;
+    background: var(--brown);
+    padding: 10px 20px;
+    border-radius: 6px;
+    margin: 40px 0 20px;
+    letter-spacing: 0.04em;
+  }
+  h2 .num {
+    font-size: 10pt;
+    background: rgba(255,255,255,0.25);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-family: "Noto Sans JP", sans-serif;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--brown);
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+    margin: 24px 0 10px;
+  }
+
+  p { margin-bottom: 12px; }
+
+  /* ─── 強調ボックス ───────────── */
+  .highlight {
+    background: #FFF3E0;
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 10pt;
+    margin: 12px 0 20px;
+  }
+  .highlight strong { color: var(--brown); }
+
+  /* ─── 体験フロー ─────────────── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 16px 0 24px;
+  }
+  .flow-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .flow-step {
+    flex: 1;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .flow-step__num {
+    font-size: 8pt;
+    font-weight: 700;
+    color: var(--brown-light);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .flow-step__icon { font-size: 24px; margin-bottom: 4px; }
+  .flow-step__title {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: var(--brown);
+    margin-bottom: 4px;
+  }
+  .flow-step__desc {
+    font-size: 9pt;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    color: var(--brown-light);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .flow-arrow-down {
+    text-align: center;
+    color: var(--brown-light);
+    font-size: 18px;
+    padding: 4px 0;
+  }
+  .flow-note {
+    font-size: 8.5pt;
+    color: var(--green);
+    background: #EFF7E8;
+    border: 1px solid #B8D8A0;
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-top: 4px;
+  }
+
+  /* ─── システム構成図 ─────────── */
+  .arch {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0 24px;
+  }
+  .arch-row {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr;
+    align-items: center;
+  }
+  .arch-box {
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .arch-box--phone  { background: #EBF5FB; }
+  .arch-box--server { background: #FEF9E7; }
+  .arch-box--sign   { background: #EAF7EA; }
+  .arch-box__icon   { font-size: 28px; margin-bottom: 6px; }
+  .arch-box__title  { font-size: 10.5pt; font-weight: 700; margin-bottom: 4px; }
+  .arch-box__desc   { font-size: 8.5pt; color: var(--ink-soft); line-height: 1.5; }
+  .arch-arrow {
+    text-align: center;
+    font-size: 18px;
+    color: var(--brown-light);
+    background: #FAF3EA;
+    padding: 18px 0;
+  }
+  .arch-label {
+    font-size: 7.5pt;
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 8px 16px;
+    background: var(--bg-section);
+    border-top: 1px solid var(--border);
+    grid-column: 1 / -1;
+  }
+
+  /* ─── 画面一覧 ───────────────── */
+  .screens {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0 24px;
+  }
+  .screen-card {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .screen-card__header {
+    padding: 8px 12px;
+    font-size: 9pt;
+    font-weight: 700;
+    color: #fff;
+  }
+  .screen-card__body {
+    padding: 10px 12px;
+    font-size: 8.5pt;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    background: #fff;
+  }
+  .screen-card__tag {
+    display: inline-block;
+    font-size: 7.5pt;
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+
+  /* ─── ステータス表 ───────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 24px;
+    font-size: 9.5pt;
+  }
+  th {
+    background: var(--brown);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 700;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--bg-section); }
+  .tag {
+    display: inline-block;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .tag--done    { background: #D4EDDA; color: #1A6B2A; }
+  .tag--partial { background: #FFF3CD; color: #856404; }
+  .tag--todo    { background: #F8D7DA; color: #721C24; }
+  .tag--tbd     { background: #E2E3E5; color: #383D41; }
+
+  /* ─── 確認事項リスト ─────────── */
+  .checklist {
+    list-style: none;
+    margin: 12px 0 24px;
+  }
+  .checklist li {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 9.5pt;
+    align-items: flex-start;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li:nth-child(odd) { background: var(--bg-section); }
+  .check-icon { flex-shrink: 0; font-size: 14px; margin-top: 2px; }
+  .check-body { flex: 1; }
+  .check-title { font-weight: 700; color: var(--brown); margin-bottom: 2px; }
+  .check-desc  { color: var(--ink-soft); font-size: 9pt; }
+  .check-who {
+    flex-shrink: 0;
+    font-size: 8pt;
+    color: var(--blue);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ─── URL ボックス ───────────── */
+  .url-box {
+    background: #1E1E2E;
+    color: #A8D8A8;
+    font-family: monospace;
+    font-size: 9.5pt;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 8px 0 20px;
+    line-height: 2;
+  }
+  .url-box .label {
+    color: #888;
+    font-size: 8pt;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ─── 注意事項 ───────────────── */
+  .caution {
+    background: #FFF3CD;
+    border: 1.5px solid #FFDDA0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 9pt;
+    margin: 12px 0;
+    color: #5A4010;
+  }
+  .caution strong { color: #8B5E00; }
+
+  /* ─── フッタ ─────────────────── */
+  .footer {
+    background: var(--brown);
+    color: #C9986A;
+    text-align: center;
+    padding: 16px;
+    font-size: 8.5pt;
+  }
+
+  /* ─── 印刷ヒント ─────────────── */
+  .print-hint {
+    text-align: center;
+    padding: 16px;
+    font-size: 9pt;
+    color: #888;
+    background: #E8DDD0;
+  }
+</style>
+</head>
+<body>
+
+<div class="print-hint no-print">
+  ブラウザの「印刷」→「PDFに保存」でPDF化できます（推奨: A4・余白なし・背景のグラフィックを含む）
+</div>
+
+<div class="page">
+
+  <!-- ══ 表紙 ══ -->
+  <div class="cover">
+    <div class="cover__label">GREEN×EXPO 2027 大阪府ブース ／ 参加型サイネージ プロトタイプ</div>
+    <div class="cover__title">みんなで咲かす<br>未来の街</div>
+    <div class="cover__sub">システム説明資料（プロトタイプ版）</div>
+    <div class="cover__meta">
+      <span>作成日：2026年5月</span>
+      <span>バージョン：0.1（プロトタイプ）</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- ══ 目次 ══ -->
+    <div class="toc">
+      <div class="toc__title">目　次</div>
+      <ul class="toc__list">
+        <li><span>1</span>プロジェクト概要</li>
+        <li><span>2</span>来場者の体験フロー</li>
+        <li><span>3</span>システム構成</li>
+        <li><span>4</span>各画面のご説明</li>
+        <li><span>5</span>動作確認URL</li>
+        <li><span>6</span>実装状況</li>
+        <li><span>7</span>今後の確認事項</li>
+        <li><span>8</span>注意事項</li>
+      </ul>
+    </div>
+
+    <!-- ══ 1. 概要 ══ -->
+    <h2><span class="num">1</span>プロジェクト概要</h2>
+
+    <p>GREEN×EXPO 2027（横浜国際園芸博覧会）の大阪府自治体出展ブースで使用する、<strong>来場者参加型のWebシステムのプロトタイプ</strong>です。</p>
+
+    <div class="highlight">
+      <strong>コンセプト：</strong>来場者がスマートフォンでガーデンを巡り、自分の「花」を選んで送信すると、ゴール地点の大型サイネージに映る「花が咲く街」にその花が加わり、累計数が増えていく参加型体験です。
+    </div>
+
+    <h3>ねらい</h3>
+    <p>・来場者が受け身の「鑑賞」から、主体的に参加する体験への転換<br>
+    ・「自分の花が街を彩る」という達成感と記念性の提供<br>
+    ・大阪の文化・歴史・自然への理解促進（ガーデンツアーを通じて）<br>
+    ・サイネージ上のリアルタイムな賑わいの可視化</p>
+
+    <!-- ══ 2. 体験フロー ══ -->
+    <h2><span class="num">2</span>来場者の体験フロー</h2>
+
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step__num">STEP 1</div>
+          <div class="flow-step__icon">📱</div>
+          <div class="flow-step__title">QRコードをスキャン</div>
+          <div class="flow-step__desc">入口やスポットに設置されたQRコードをスマホカメラで読み取る。アプリのインストール不要。</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step__num">STEP 2</div>
+          <div class="flow-step__icon">🗺️</div>
+          <div class="flow-step__title">ガーデンをめぐる</div>
+          <div class="flow-step__desc">3か所のスポット（水の庭・時をたどる道・未来のゲート）を巡り、各サインのQRを読んでスタンプを集める。</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step__num">STEP 3</div>
+          <div class="flow-step__icon">🌸</div>
+          <div class="flow-step__title">花を選んで送信</div>
+          <div class="flow-step__desc">3か所を制覇すると花の送信が解放。色・種類・ひとこと（任意）を選んでボタンを押す。</div>
+        </div>
+      </div>
+      <div class="flow-arrow-down">↓</div>
+      <div class="flow-row">
+        <div class="flow-step">
+          <div class="flow-step__num">STEP 4</div>
+          <div class="flow-step__icon">✨</div>
+          <div class="flow-step__title">スマホに即座に表示</div>
+          <div class="flow-step__desc">送信成功後、スマホ画面に「あなたの花が咲きました！」と自分の花が表示される。手応えを即時に返す。</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">
+          <div class="flow-step__num">STEP 5</div>
+          <div class="flow-step__icon">🏙️</div>
+          <div class="flow-step__title">サイネージに花が咲く</div>
+          <div class="flow-step__desc">数分後、ゴール地点のOTOMOサイネージに花が「一斉に咲く」演出で追加される。累計輪数も増える。</div>
+        </div>
+        <div class="flow-arrow" style="visibility:hidden">→</div>
+        <div class="flow-step" style="visibility:hidden"></div>
+      </div>
+    </div>
+
+    <div class="flow-note">
+      💡 スタンプはブラウザに保存されるため、スマホを一度閉じても消えません。サイネージはリアルタイムではなく数分ごとに更新される設計で、OTOMOの読み込み仕様に対応しています。
+    </div>
+
+    <!-- ══ 3. システム構成 ══ -->
+    <h2><span class="num">3</span>システム構成</h2>
+
+    <div class="arch">
+      <div class="arch-row">
+        <div class="arch-box arch-box--phone">
+          <div class="arch-box__icon">📱</div>
+          <div class="arch-box__title">スマホ向けツアーページ</div>
+          <div class="arch-box__desc">静的HTML+CSS+JS<br>QR→ガーデンツアー<br>花の選択・送信</div>
+        </div>
+        <div class="arch-arrow">→<br><span style="font-size:7pt;color:#999">花を登録</span></div>
+        <div class="arch-box arch-box--server">
+          <div class="arch-box__icon">🖥️</div>
+          <div class="arch-box__title">APIサーバー</div>
+          <div class="arch-box__desc">FastAPI + SQLite<br>花データの保存<br>集計・差分配信</div>
+        </div>
+        <div class="arch-arrow">←<br><span style="font-size:7pt;color:#999">差分を取得</span></div>
+        <div class="arch-box arch-box--sign">
+          <div class="arch-box__icon">🖼️</div>
+          <div class="arch-box__title">サイネージ表示<br>（OTOMO）</div>
+          <div class="arch-box__desc">静的HTML+CSS+JS<br>花が咲く街の描画<br>数分ごとにポーリング</div>
+        </div>
+      </div>
+      <div class="arch-label">
+        WebSocketは使用しない設計。OTOMOの「数分ごとの読み込み」仕様に合わせ、差分のみ取得して一斉開花させます。
+      </div>
+    </div>
+
+    <table>
+      <tr><th>コンポーネント</th><th>技術</th><th>ホスティング</th></tr>
+      <tr><td>APIサーバー</td><td>Python / FastAPI / SQLite</td><td>Render.com（無料プラン・デモ用）</td></tr>
+      <tr><td>サイネージ表示</td><td>HTML / CSS / JavaScript（SVGアニメ）</td><td>静的ファイル配信（場所は選ばない）</td></tr>
+      <tr><td>スマホツアーページ</td><td>HTML / CSS / JavaScript</td><td>静的ファイル配信（場所は選ばない）</td></tr>
+    </table>
+
+    <!-- ══ 4. 画面説明 ══ -->
+    <h2><span class="num">4</span>各画面のご説明</h2>
+
+    <h3>① サイネージ表示（OTOMOで映す画面）</h3>
+    <div class="screens">
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#1E6FA8">街の風景</div>
+        <div class="screen-card__body">
+          <span class="screen-card__tag tag--done" style="background:#D4EDDA;color:#1A6B2A">常時表示</span><br>
+          縦型（9:16）の大阪の街並み。大阪城・通天閣のシルエット。空・雲・太陽も描画。
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#4A7C3A">花が咲く演出</div>
+        <div class="screen-card__body">
+          <span class="screen-card__tag tag--done" style="background:#D4EDDA;color:#1A6B2A">ポーリング更新</span><br>
+          新着の花が上から舞い落ちるアニメーション。コスモス・チューリップ・桜の3種。
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#8C5A3D">累計カウンタ</div>
+        <div class="screen-card__body">
+          <span class="screen-card__tag tag--done" style="background:#D4EDDA;color:#1A6B2A">常時表示</span><br>
+          「本日 ◯◯輪 ／ 累計 ◯◯輪」を画面上部に常時表示。
+        </div>
+      </div>
+    </div>
+
+    <h3>② スマホ向けツアーページ</h3>
+    <div class="screens" style="grid-template-columns: repeat(4,1fr)">
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#8C5A3D">HOME</div>
+        <div class="screen-card__body">スタンプ進捗バー、3スポットのカード一覧、花の送信ボタン（スタンプ解放後に活性化）</div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#1E6FA8">スポット説明</div>
+        <div class="screen-card__body">看板（A2サイン）の内容を再現。スタンプ取得ボタン。サブページへのリンク。</div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#6B4226">詳細・クイズ</div>
+        <div class="screen-card__body">B4サインの内容を再現。詳細説明・クイズ・枯山水チャレンジなど計8ページ。</div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-card__header" style="background:#2A6B2A">花の送信</div>
+        <div class="screen-card__body">色（5種）・種類（3種）・ひとこと（50字以内）を選択してAPIに送信。送信後に即プレビュー表示。</div>
+      </div>
+    </div>
+
+    <h3>③ サインコンテンツの対応表</h3>
+    <table>
+      <tr><th>サイン番号</th><th>サイズ</th><th>タイトル</th><th>アプリ内の扱い</th></tr>
+      <tr><td>01</td><td>A2</td><td>水の庭</td><td>スポット1（メイン）／スタンプ対象</td></tr>
+      <tr><td>02</td><td>A2</td><td>時をたどる道</td><td>スポット2（メイン）／スタンプ対象</td></tr>
+      <tr><td>03</td><td>A2</td><td>未来のゲート</td><td>スポット3（メイン）／スタンプ対象</td></tr>
+      <tr><td>04</td><td>B4</td><td>ミャクミャクをさがそう！</td><td>スポット1のサブページ（クイズ）</td></tr>
+      <tr><td>05</td><td>B4</td><td>大阪城と石垣</td><td>スポット1のサブページ（詳細説明）</td></tr>
+      <tr><td>06</td><td>B4</td><td>残念石・刻印石って？</td><td>スポット1のサブページ（詳細説明）</td></tr>
+      <tr><td>07</td><td>B4</td><td>描いてみよう！枯山水にチャレンジ！</td><td>スポット2のサブページ（体験）</td></tr>
+      <tr><td>08</td><td>B4</td><td>古墳がいっぱい！？大阪・堺</td><td>スポット2のサブページ（詳細説明）</td></tr>
+      <tr><td>09</td><td>B4</td><td>与謝野晶子と大阪・堺</td><td>スポット2のサブページ（詳細説明）</td></tr>
+      <tr><td>10</td><td>B4</td><td>大阪の歴史風土と竹材・竹細工</td><td>スポット3のサブページ（詳細説明）</td></tr>
+      <tr><td>11</td><td>B4</td><td>ミャクミャク、みつかった！？</td><td>スポット3のサブページ（クイズのこたえ）</td></tr>
+      <tr><td>12</td><td>A3</td><td>水でっぽうアーチの案内</td><td>対象外（現地掲示のみ）</td></tr>
+    </table>
+
+    <!-- ══ 5. URL ══ -->
+    <h2><span class="num">5</span>動作確認URL（プロトタイプ）</h2>
+
+    <div class="caution">
+      <strong>⚠️ Render.com 無料プランの制約：</strong>15分間アクセスがないとサーバーがスリープします。最初のアクセスに約30秒かかる場合があります。デモ前にアクセスしてウォームアップしてください。
+    </div>
+
+    <h3>APIサーバー（Swagger UI）</h3>
+    <div class="url-box">
+      <span class="label">花の登録・確認・テストデータ投入</span>
+      https://hanasaku-api.onrender.com/docs
+    </div>
+
+    <h3>テストデータの投入（デモ前に実行）</h3>
+    <div class="url-box">
+      <span class="label">花を30輪追加（n= で数を変更可能）</span>
+      https://hanasaku-api.onrender.com/api/demo/seed?n=30
+    </div>
+
+    <h3>サイネージ表示・スマホページ</h3>
+    <p>現在はローカル環境で稼働確認中です。本番公開URLは別途ご案内します。</p>
+
+    <!-- ══ 6. 実装状況 ══ -->
+    <h2><span class="num">6</span>実装状況</h2>
+
+    <table>
+      <tr><th>機能</th><th>状況</th><th>備考</th></tr>
+      <tr>
+        <td>サイネージ表示（街の描画・花アニメ）</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>コスモス・チューリップ・桜の3種。落下アニメ実装済み。</td>
+      </tr>
+      <tr>
+        <td>累計カウンタ表示</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>本日・累計をリアルタイムに更新</td>
+      </tr>
+      <tr>
+        <td>APIサーバー（花の登録・取得・集計）</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>Render.comにデプロイ済み。NGワードフィルタ実装済み。</td>
+      </tr>
+      <tr>
+        <td>スマホ向けHOME・スタンプラリー</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>3スポット構成。スタンプはlocalStorage保存。</td>
+      </tr>
+      <tr>
+        <td>スポット説明・サブページ（サイン再現）</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>サイン01〜11の内容をアプリ内に実装。PDFデザインに準拠。</td>
+      </tr>
+      <tr>
+        <td>花の選択・送信・プレビュー</td>
+        <td><span class="tag tag--done">完了</span></td>
+        <td>5色×3種=15通り。送信後にスマホで即座に自分の花を表示。</td>
+      </tr>
+      <tr>
+        <td>写真の差し込み（スポット説明内）</td>
+        <td><span class="tag tag--todo">未対応</span></td>
+        <td>現在はプレースホルダー。権利確認済みの画像が揃い次第差し込み可能。</td>
+      </tr>
+      <tr>
+        <td>ミャクミャクのイラスト</td>
+        <td><span class="tag tag--todo">未対応</span></td>
+        <td>ライセンス確認・正式素材の調達が必要。</td>
+      </tr>
+      <tr>
+        <td>OTOMO実機との接続確認</td>
+        <td><span class="tag tag--tbd">未確認</span></td>
+        <td>ファンテック社への確認が前提。</td>
+      </tr>
+    </table>
+
+    <!-- ══ 7. 確認事項 ══ -->
+    <h2><span class="num">7</span>今後の確認事項</h2>
+
+    <ul class="checklist">
+      <li>
+        <div class="check-icon">🔧</div>
+        <div class="check-body">
+          <div class="check-title">OTOMO実機の仕様確認</div>
+          <div class="check-desc">WebページのURL指定方法、読み込み間隔（固定か可変か）、画面のちらつきの有無、縦型43インチでの動作可否</div>
+        </div>
+        <div class="check-who">ファンテック社</div>
+      </li>
+      <li>
+        <div class="check-icon">📸</div>
+        <div class="check-body">
+          <div class="check-title">写真素材の調達</div>
+          <div class="check-desc">各スポット説明ページに使用する写真。大阪府広報写真など権利の明確なものを用意。</div>
+        </div>
+        <div class="check-who">大阪府</div>
+      </li>
+      <li>
+        <div class="check-icon">🎭</div>
+        <div class="check-body">
+          <div class="check-title">ミャクミャク素材のライセンス確認</div>
+          <div class="check-desc">クイズページ（サイン04・11）にミャクミャクのイラストを使用する場合は正式な利用申請・素材調達が必要。</div>
+        </div>
+        <div class="check-who">大阪府・博覧会協会</div>
+      </li>
+      <li>
+        <div class="check-icon">🌐</div>
+        <div class="check-body">
+          <div class="check-title">本番サーバーの選定</div>
+          <div class="check-desc">現在のRender.com無料プランはデモ専用。本番運用では有料プランまたは別のサーバーへの移行が必要。データの永続性も要検討。</div>
+        </div>
+        <div class="check-who">要検討</div>
+      </li>
+      <li>
+        <div class="check-icon">📍</div>
+        <div class="check-body">
+          <div class="check-title">QRコードの配置計画</div>
+          <div class="check-desc">各スポット（01〜03）のQRコード設置場所、B4サイン（04〜11）へのQRの要否（現状はA2スポットのみ対応）</div>
+        </div>
+        <div class="check-who">大阪府</div>
+      </li>
+      <li>
+        <div class="check-icon">👥</div>
+        <div class="check-body">
+          <div class="check-title">来場者規模・会期の想定</div>
+          <div class="check-desc">想定同時接続数、会期中の累計来場者数。サーバー負荷設計に必要。</div>
+        </div>
+        <div class="check-who">大阪府</div>
+      </li>
+      <li>
+        <div class="check-icon">📝</div>
+        <div class="check-body">
+          <div class="check-title">スポット内容・テキストの確認</div>
+          <div class="check-desc">現在はPDF看板原稿をそのまま転載。内容の修正・追記・ルビなどの要望があれば反映可能。</div>
+        </div>
+        <div class="check-who">大阪府</div>
+      </li>
+    </ul>
+
+    <!-- ══ 8. 注意事項 ══ -->
+    <h2><span class="num">8</span>注意事項</h2>
+
+    <table>
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr>
+        <td>現状の位置付け</td>
+        <td>本資料のシステムは<strong>プロトタイプ</strong>です。社内・関係者向けのデモ・合意形成を目的としており、本番運用には追加の対応が必要です。</td>
+      </tr>
+      <tr>
+        <td>データの永続性</td>
+        <td>現在のAPIサーバー（Render.com無料プラン）はサービス再起動でデータがリセットされます。デモ前に種データを投入してください。</td>
+      </tr>
+      <tr>
+        <td>CORS設定</td>
+        <td>現在はすべてのオリジンからのアクセスを許可しています（`allow_origins=["*"]`）。本番前に許可するドメインを限定する対応が必要です。</td>
+      </tr>
+      <tr>
+        <td>個人情報</td>
+        <td>送信データは「色・種類・ひとこと」のみで、氏名・連絡先等の個人情報は一切収集しません。</td>
+      </tr>
+      <tr>
+        <td>メッセージ管理</td>
+        <td>簡易NGワードフィルタを実装済みですが、展示前に内容確認の運用手順を設けることを推奨します。</td>
+      </tr>
+    </table>
+
+  </div><!-- /body -->
+
+  <div class="footer">
+    みんなで咲かす未来の街 ― システム説明資料（プロトタイプ版）&emsp;|&emsp;GREEN×EXPO 2027 大阪府ブース
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>
