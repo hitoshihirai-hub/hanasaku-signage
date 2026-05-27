@@ -1,56 +1,121 @@
-/* 「ふわっと一斉に咲く」演出。
-   渡された新規花リストを SVG に追加し、staggered なディレイで bloom させる。
-   既に咲き終わった花（settled）には animation を付けない。 */
+/* 花の落下演出（rAF ベース）と初回静止配置。
+   Scene.createFlowerNode が返す outer（位置g）を DOM に追加し、
+   requestAnimationFrame で上から落下させる。
+   落下完了後に inner（CSS アニメ対象g）へ .sway を付与する。 */
 window.Bloom = (function () {
 
   const FLOWERS_ROOT_ID = "flowers-root";
+  function root() { return document.getElementById(FLOWERS_ROOT_ID); }
 
-  function root() {
-    return document.getElementById(FLOWERS_ROOT_ID);
+  /**
+   * rAF で1輪を落下アニメーション。
+   * @param {SVGGElement} outer  位置専用 g（dataset.fx/fy/sc を持つ）
+   * @param {SVGGElement} inner  CSS アニメ対象 g（.flower クラス付き）
+   * @param {number}      delay  開始遅延（秒）
+   */
+  function animateFall(outer, inner, delay) {
+    const fx       = parseFloat(outer.dataset.fx);
+    const fy       = parseFloat(outer.dataset.fy);
+    const sc       = parseFloat(outer.dataset.sc);
+    const startY   = -160;                                 // SVG ビューポート上端の外側
+
+    // 落下パラメータ（花ごとにランダム）
+    const duration = 2400 + Math.random() * 1800;          // 2.4〜4.2秒
+    const swayAmp  = 28 + Math.random() * 48;              // 左右揺れ幅（SVG単位）
+    const swayFreq = 0.65 + Math.random() * 0.55;         // 揺れの周期
+
+    // 落下開始位置にセット（DOM 追加直後に適用）
+    outer.setAttribute("transform",
+      `translate(${fx}, ${startY}) scale(${sc})`);
+    inner.style.opacity = "0";
+
+    let startTime = null;
+
+    function step(ts) {
+      if (!outer.isConnected) return;     // DOM から除去済みなら停止
+      if (!startTime) startTime = ts;
+
+      const elapsed = ts - startTime;
+      const t = Math.min(elapsed / duration, 1);
+
+      if (t < 1) {
+        // smoothstep で自然な落下感（最初ゆっくり→中盤加速→着地は柔らかく）
+        const easedT = t * t * (3 - 2 * t);
+        const ty = startY + (fy - startY) * easedT;
+
+        // 左右の揺れ：sin 波で徐々に収束
+        const tx = fx + Math.sin(t * Math.PI * swayFreq * 2) * swayAmp * (1 - t * 0.55);
+
+        // 透明度：最初の 25% で 0→1 へフェードイン
+        const opacity = Math.min(1, t * 4);
+
+        outer.setAttribute("transform",
+          `translate(${tx.toFixed(1)}, ${ty.toFixed(1)}) scale(${sc})`);
+        inner.style.opacity = opacity.toFixed(3);
+
+        requestAnimationFrame(step);
+
+      } else {
+        // 着地完了：最終位置に固定
+        outer.setAttribute("transform",
+          `translate(${fx}, ${fy}) scale(${sc})`);
+        inner.style.opacity = "1";
+
+        // 少し間を置いてゆらぎ開始
+        setTimeout(() => {
+          if (!inner.isConnected) return;
+          inner.classList.add("sway");
+          inner.style.setProperty(
+            "--sway-delay",
+            (Math.random() * 4).toFixed(2) + "s"
+          );
+        }, 120);
+      }
+    }
+
+    // delay 秒後に rAF を開始
+    if (delay <= 0) {
+      requestAnimationFrame(step);
+    } else {
+      setTimeout(() => requestAnimationFrame(step), delay * 1000);
+    }
   }
 
-  // 新規花を fresh bloom で追加
+  // ──────────────────────────────────────────────────────────────
+
+  /** 新規花を落下アニメ付きで追加 */
   function bloomNew(flowers) {
     const r = root();
     if (!r) return;
     flowers.forEach((f, i) => {
-      const node = Scene.createFlowerNode(f);
-      // 0〜2.5秒の間でランダムにディレイ（同時感を保ちつつバラけさせる）
-      const delay = (i * 0.08 + Math.random() * 0.4).toFixed(2);
-      node.style.setProperty("--bloom-delay", delay + "s");
-
-      r.appendChild(node);
-
-      // 咲ききった後にゆらぎを付与
-      const totalDelayMs = (parseFloat(delay) + 1.6) * 1000;
-      setTimeout(() => {
-        if (!node.isConnected) return;
-        node.classList.add("sway");
-        node.style.setProperty("--sway-delay", (Math.random() * 4).toFixed(2) + "s");
-      }, totalDelayMs + 50);
+      const outer = Scene.createFlowerNode(f);
+      const g     = outer._animated;
+      const delay = i * 0.12 + Math.random() * 0.5;   // 花ごとに少しずつずらす
+      r.appendChild(outer);
+      animateFall(outer, g, delay);
     });
   }
 
-  // 既存花を「咲ききった状態」で並べる（初回ロード用）
+  /** 初回ロード時：着地済み状態で即表示（アニメなし） */
   function settle(flowers) {
     const r = root();
     if (!r) return;
     flowers.forEach(f => {
-      const node = Scene.createFlowerNode(f);
-      node.classList.add("settled");
-      r.appendChild(node);
+      const outer = Scene.createFlowerNode(f);
+      const g     = outer._animated;
+      g.classList.add("settled");
+      r.appendChild(outer);
     });
   }
 
-  // 古い花を間引き（max を超えたら先頭から削除）
+  /** 最大数を超えた古い花を先頭から間引き */
   function pruneTo(max) {
     const r = root();
     if (!r) return;
-    while (r.children.length > max) {
-      r.removeChild(r.firstChild);
-    }
+    while (r.children.length > max) r.removeChild(r.firstChild);
   }
 
+  /** 全花を消去して占有リストもリセット */
   function clearAll() {
     const r = root();
     if (!r) return;

@@ -71,20 +71,19 @@
     window.addEventListener("keydown", (e) => {
       const k = e.key.toLowerCase();
       if (k === "f") {
-        // 花を1個追加（dummyのみ）
-        if (cfg.source === "dummy") {
+        // デバッグ用：ソースを問わずローカルで花を1個追加
+        {
           const f = FlowerAPI._dummy.add();
           Bloom.bloomNew([f]);
           Bloom.pruneTo(cfg.maxFlowers);
-          state.sinceId = f.id;
           // 集計も即時更新
           setCounter("count-total", parseInt(document.getElementById("count-total").textContent || "0", 10) + 1);
           setCounter("count-today", parseInt(document.getElementById("count-today").textContent || "0", 10) + 1);
         }
       } else if (k === "r") {
-        // リセット
+        // デバッグ用リセット（表示のみ。api モードでは次回ポーリングで復元される）
         Bloom.clearAll();
-        if (cfg.source === "dummy") FlowerAPI._dummy.reset();
+        FlowerAPI._dummy.reset();
         state.sinceId = 0;
         state.isFirstLoad = true;
         setCounter("count-total", 0);

@@ -173,10 +173,16 @@
     <!-- 花レイヤー（SVG。動的に花を追加） -->
     <svg class="flowers" id="flowers-layer" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
-        <filter id="flower-wobble">
-          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="9"/>
-          <feDisplacementMap in="SourceGraphic" scale="1.6"/>
-        </filter>
+        <!-- 花びら用グラデーション（中心=明るい、外縁=暗い）-->
+        <radialGradient id="fg-pink"   cx="38%" cy="30%" r="75%"><stop offset="0%"   stop-color="#FFEAF3"/><stop offset="100%" stop-color="#C0356A"/></radialGradient>
+        <radialGradient id="fg-yellow" cx="38%" cy="30%" r="75%"><stop offset="0%"   stop-color="#FFFBD0"/><stop offset="100%" stop-color="#C08010"/></radialGradient>
+        <radialGradient id="fg-white"  cx="38%" cy="30%" r="75%"><stop offset="0%"   stop-color="#FFFFFF"/><stop offset="100%" stop-color="#C8A860"/></radialGradient>
+        <radialGradient id="fg-purple" cx="38%" cy="30%" r="75%"><stop offset="0%"   stop-color="#F2E6FF"/><stop offset="100%" stop-color="#6030A8"/></radialGradient>
+        <radialGradient id="fg-red"    cx="38%" cy="30%" r="75%"><stop offset="0%"   stop-color="#FFE0D8"/><stop offset="100%" stop-color="#A81818"/></radialGradient>
+        <!-- 花芯用グラデーション -->
+        <radialGradient id="fg-center" cx="40%" cy="35%" r="70%"><stop offset="0%"   stop-color="#FFFCC0"/><stop offset="70%"  stop-color="#E8C020"/><stop offset="100%" stop-color="#A07010"/></radialGradient>
+        <!-- 花びら内側の光沢ライン（白半透明） -->
+        <linearGradient id="fg-shine"  x1="0.5" y1="0" x2="0.5" y2="1"><stop offset="0%"   stop-color="#ffffff" stop-opacity="0.55"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
       </defs>
       <g id="flowers-root"></g>
     </svg>

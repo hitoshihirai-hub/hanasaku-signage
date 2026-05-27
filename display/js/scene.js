@@ -1,28 +1,28 @@
-/* 花の SVG 生成と、座標配置（重なりすぎない分散）
+/* 花の SVG 生成と座標配置（重なりすぎない分散）
 
-   花の形は3種類：
-     a = デイジー風（6枚花びら + 中央）
-     b = チューリップ風（カップ型）
-     c = ポピー／椿風（丸い花）
+   構造：
+     outer <g transform="translate(x,y) scale(s)">  ← 位置専用。CSS transform なし。
+       inner <g class="flower">                      ← アニメ専用。SVG transform なし。
+         stem / leaf / head ...
 
-   サイズ・色味は手描き温かみ系に寄せる。
-   フィルタは輪郭が崩れて見えにくくなるため使わない。
+   SVG transform属性 と CSS transform プロパティを同一要素に混在させると
+   ブラウザによって上書き・干渉が起きるため、役割を分離している。
+
+   花の種類:
+     a = コスモス（8枚の細長い花びら）
+     b = チューリップ（カップ型3枚）
+     c = 桜（5枚・先端にV字ノッチ）
 */
 window.Scene = (function () {
 
-  // 1080 x 1920 viewBox 内の、花を配置してよい領域
   const FIELD = { x0: 80, y0: 380, x1: 1000, y1: 1860 };
-
-  // 花同士の最小距離（中心間）。花がはっきり見えるよう間隔を大きく取る。
   const MIN_DIST = 150;
   const MAX_TRIES = 24;
-
   const occupied = [];
 
   function pickPosition() {
     for (let i = 0; i < MAX_TRIES; i++) {
       const x = FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0);
-      // y^0.7 で下方をやや厚く
       const t = Math.pow(Math.random(), 0.7);
       const y = FIELD.y0 + t * (FIELD.y1 - FIELD.y0);
       if (!collides(x, y)) {
@@ -44,50 +44,63 @@ window.Scene = (function () {
     return false;
   }
 
-  function clearOccupied() {
-    occupied.length = 0;
-  }
+  function clearOccupied() { occupied.length = 0; }
 
-  // 手描き温かみ系の色辞書
-  // petal=花びら / petalDark=外周線 / center=中央 / centerDark=中央外周
+  // 色ごとの補助色（線・影）。花びら本体は SVG グラデーション url(#fg-<key>) を使う
   const COLOR_MAP = {
-    pink:   { petal: "#F4A6B8", petalDark: "#B85C7E", center: "#FFE9A8", centerDark: "#C28F2D" },
-    yellow: { petal: "#FAD16A", petalDark: "#C68A1A", center: "#FFF5D0", centerDark: "#C68A1A" },
-    white:  { petal: "#FFFBEC", petalDark: "#B89A60", center: "#F5BE5A", centerDark: "#A56A1E" },
-    purple: { petal: "#C9A6E0", petalDark: "#7B519C", center: "#FFE5A8", centerDark: "#C28F2D" },
-    red:    { petal: "#EE7A6A", petalDark: "#A0382C", center: "#FFD78A", centerDark: "#A56A1E" },
+    pink:   { petalDark: "#B85C7E", center: "#FFE9A8", centerDark: "#C28F2D" },
+    yellow: { petalDark: "#C68A1A", center: "#FFF5D0", centerDark: "#A05010" },
+    white:  { petalDark: "#B89A60", center: "#F5BE5A", centerDark: "#A56A1E" },
+    purple: { petalDark: "#7B519C", center: "#FFE5A8", centerDark: "#C28F2D" },
+    red:    { petalDark: "#A0382C", center: "#FFD78A", centerDark: "#A56A1E" },
   };
 
-  // 1 個の花の <g> SVG ノードを作る
+  /**
+   * 1個の花を生成する。
+   * 戻り値は outer <g>（位置指定済み）。
+   * outer._animated に CSS アニメーション対象の inner <g> への参照を持つ。
+   * outer.dataset.fx / .fy / .sc に落下アニメの最終座標とスケールを保持する。
+   */
   function createFlowerNode(flower) {
     const SVG = "http://www.w3.org/2000/svg";
-    const c = COLOR_MAP[flower.color] || COLOR_MAP.pink;
+    const colorKey = flower.color in COLOR_MAP ? flower.color : "pink";
+    const c = COLOR_MAP[colorKey];
     const pos = pickPosition();
-    const rot = (Math.random() * 50 - 25).toFixed(1); // -25〜+25deg
-    const scale = 0.95 + Math.random() * 0.25;         // 0.95〜1.20
+    const rot = (Math.random() * 50 - 25).toFixed(1);
+    const scale = 0.95 + Math.random() * 0.25;
 
+    // ── outer g：位置のみ（CSS transform は付けない） ──────────
+    const outer = document.createElementNS(SVG, "g");
+    outer.setAttribute(
+      "transform",
+      `translate(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}) scale(${scale.toFixed(3)})`
+    );
+    // bloom.js が落下アニメで使う最終座標・スケール
+    outer.dataset.fx = pos.x.toFixed(1);
+    outer.dataset.fy = pos.y.toFixed(1);
+    outer.dataset.sc = scale.toFixed(3);
+
+    // ── inner g：CSS アニメーション対象（SVG transform は付けない） ─
     const g = document.createElementNS(SVG, "g");
     g.setAttribute("class", "flower");
-    g.setAttribute("transform", `translate(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)}) scale(${scale.toFixed(3)})`);
     g.style.setProperty("--seed-rot", rot + "deg");
     g.setAttribute("data-id", flower.id);
 
-    // 茎
+    // 茎（緩やかな曲線）
     const stem = document.createElementNS(SVG, "path");
-    const stemSway = (Math.random() * 10 - 5).toFixed(1);
-    stem.setAttribute("d", `M0,30 q${stemSway},36 0,76`);
+    const sw = (Math.random() * 10 - 5).toFixed(1);
+    stem.setAttribute("d", `M0,30 q${sw},36 0,76`);
     stem.setAttribute("stroke", "#5C8A3A");
     stem.setAttribute("stroke-width", "7");
     stem.setAttribute("stroke-linecap", "round");
     stem.setAttribute("fill", "none");
     g.appendChild(stem);
 
-    // 葉（片側に1枚）
+    // 葉（左右ランダム）
     const leaf = document.createElementNS(SVG, "path");
-    const leafSide = Math.random() < 0.5 ? -1 : 1;
-    const ly = 56;
+    const side = Math.random() < 0.5 ? -1 : 1;
     leaf.setAttribute("d",
-      `M0,${ly} q${leafSide*22},-4 ${leafSide*34},16 q${-leafSide*10},10 ${-leafSide*34},-16 Z`);
+      `M0,56 q${side * 22},-4 ${side * 34},16 q${-side * 10},10 ${-side * 34},-16 Z`);
     leaf.setAttribute("fill", "#7FA84A");
     leaf.setAttribute("stroke", "#4F7A2A");
     leaf.setAttribute("stroke-width", "2");
@@ -95,137 +108,148 @@ window.Scene = (function () {
     g.appendChild(leaf);
 
     // 花本体
-    const head = createHeadByKind(SVG, flower.kind, c);
-    g.appendChild(head);
+    g.appendChild(createHead(SVG, flower.kind, c, colorKey));
 
-    return g;
+    outer.appendChild(g);
+
+    // bloom.js がアクセスするためのショートカット
+    outer._animated = g;
+
+    return outer;
   }
 
-  function createHeadByKind(SVG, kind, c) {
+  // ────── 花びら形状の生成 ─────────────────────────────────────────
+
+  function createHead(SVG, kind, c, colorKey) {
     const head = document.createElementNS(SVG, "g");
 
     if (kind === "a") {
-      // デイジー風：6枚の花びら
-      const petals = 6;
-      for (let i = 0; i < petals; i++) {
-        const angle = (360 / petals) * i;
-        const petal = document.createElementNS(SVG, "ellipse");
-        petal.setAttribute("cx", "0");
-        petal.setAttribute("cy", "-34");
-        petal.setAttribute("rx", "18");
-        petal.setAttribute("ry", "34");
-        petal.setAttribute("fill", c.petal);
+      // ── コスモス：8枚の細長い花びら ────────────────────────────
+      // 花びら1枚（上方向。回転で8方向に配置）
+      const PD = "M0,4 C-7,0 -11,-20 -6,-42 Q0,-55 6,-42 C11,-20 7,0 0,4";
+      for (let i = 0; i < 8; i++) {
+        const petal = document.createElementNS(SVG, "path");
+        petal.setAttribute("d", PD);
+        petal.setAttribute("fill", `url(#fg-${colorKey})`);
         petal.setAttribute("stroke", c.petalDark);
-        petal.setAttribute("stroke-width", "2.5");
+        petal.setAttribute("stroke-width", "1.5");
         petal.setAttribute("stroke-linejoin", "round");
-        petal.setAttribute("transform", `rotate(${angle})`);
+        petal.setAttribute("transform", `rotate(${i * 45})`);
         head.appendChild(petal);
       }
-      const center = document.createElementNS(SVG, "circle");
-      center.setAttribute("r", "16");
-      center.setAttribute("fill", c.center);
-      center.setAttribute("stroke", c.centerDark);
-      center.setAttribute("stroke-width", "2.5");
-      head.appendChild(center);
-      // 中央の小さなドット（種を散らす）
-      for (let i = 0; i < 5; i++) {
-        const a = (Math.PI * 2 / 5) * i - Math.PI / 2;
+      // 花芯（外リング）
+      const ctrRing = document.createElementNS(SVG, "circle");
+      ctrRing.setAttribute("r", "14");
+      ctrRing.setAttribute("fill", "url(#fg-center)");
+      ctrRing.setAttribute("stroke", c.centerDark);
+      ctrRing.setAttribute("stroke-width", "2");
+      head.appendChild(ctrRing);
+      // 花芯の小粒
+      for (let i = 0; i < 7; i++) {
+        const a = (Math.PI * 2 / 7) * i;
         const dot = document.createElementNS(SVG, "circle");
-        dot.setAttribute("cx", (Math.cos(a) * 6).toFixed(1));
-        dot.setAttribute("cy", (Math.sin(a) * 6).toFixed(1));
-        dot.setAttribute("r", "1.6");
+        dot.setAttribute("cx", (Math.cos(a) * 6.5).toFixed(1));
+        dot.setAttribute("cy", (Math.sin(a) * 6.5).toFixed(1));
+        dot.setAttribute("r", "2.2");
         dot.setAttribute("fill", c.centerDark);
         head.appendChild(dot);
       }
+      // 中心点
+      const ctrDot = document.createElementNS(SVG, "circle");
+      ctrDot.setAttribute("r", "4");
+      ctrDot.setAttribute("fill", c.centerDark);
+      head.appendChild(ctrDot);
 
     } else if (kind === "b") {
-      // チューリップ風：カップ型
-      // 後ろの2枚（左右）
-      [-1, 1].forEach(side => {
+      // ── チューリップ：カップ型3枚花びら ──────────────────────────
+      // 奥の2枚（左・右、やや暗め）
+      [-1, 1].forEach(s => {
         const p = document.createElementNS(SVG, "path");
         p.setAttribute("d",
-          `M0,8
-           q${side*28},-12 ${side*30},-44
-           q${-side*16},-14 ${-side*30},10 Z`);
+          `M0,8 q${s * 28},-12 ${s * 30},-44 q${-s * 16},-14 ${-s * 30},10 Z`);
         p.setAttribute("fill", c.petalDark);
         p.setAttribute("stroke", c.petalDark);
         p.setAttribute("stroke-width", "2");
         p.setAttribute("stroke-linejoin", "round");
+        p.setAttribute("opacity", "0.82");
         head.appendChild(p);
       });
-      // 手前の中央花びら
-      const center = document.createElementNS(SVG, "path");
-      center.setAttribute("d",
-        `M0,18
-         q-22,-14 -16,-44
-         q16,-22 32,0
-         q6,30 -16,44 Z`);
-      center.setAttribute("fill", c.petal);
-      center.setAttribute("stroke", c.petalDark);
-      center.setAttribute("stroke-width", "2.5");
-      center.setAttribute("stroke-linejoin", "round");
-      head.appendChild(center);
-      // 中央の縦線（合わせ目）
+      // 手前の花びら（メイン・グラデーション）
+      const front = document.createElementNS(SVG, "path");
+      front.setAttribute("d",
+        `M0,18 q-22,-14 -16,-44 q16,-22 32,0 q6,30 -16,44 Z`);
+      front.setAttribute("fill", `url(#fg-${colorKey})`);
+      front.setAttribute("stroke", c.petalDark);
+      front.setAttribute("stroke-width", "2.5");
+      front.setAttribute("stroke-linejoin", "round");
+      head.appendChild(front);
+      // 縫い目ライン（中央の筋）
       const seam = document.createElementNS(SVG, "path");
       seam.setAttribute("d", "M0,14 q-2,-18 0,-34");
       seam.setAttribute("stroke", c.petalDark);
       seam.setAttribute("stroke-width", "1.5");
       seam.setAttribute("fill", "none");
-      seam.setAttribute("opacity", "0.6");
+      seam.setAttribute("opacity", "0.5");
       head.appendChild(seam);
+      // 光沢ハイライト（白半透明の楕円）
+      const shine = document.createElementNS(SVG, "ellipse");
+      shine.setAttribute("cx", "-6"); shine.setAttribute("cy", "-14");
+      shine.setAttribute("rx", "5"); shine.setAttribute("ry", "11");
+      shine.setAttribute("fill", "url(#fg-shine)");
+      shine.setAttribute("opacity", "0.55");
+      head.appendChild(shine);
 
     } else {
-      // c: ポピー／椿風 — 丸くふっくらした花
-      // 外側の花びら（5枚を背面に）
-      const back = 5;
-      for (let i = 0; i < back; i++) {
-        const angle = (360 / back) * i + 36;
-        const petal = document.createElementNS(SVG, "ellipse");
-        petal.setAttribute("cx", "0");
-        petal.setAttribute("cy", "-30");
-        petal.setAttribute("rx", "20");
-        petal.setAttribute("ry", "26");
-        petal.setAttribute("fill", c.petalDark);
-        petal.setAttribute("opacity", "0.95");
-        petal.setAttribute("transform", `rotate(${angle})`);
+      // ── 桜：5枚・先端にV字ノッチ ────────────────────────────────
+      // 花びら1枚（上向き。72°刻みで5方向）
+      // 先端: 両サイドが (-5,-57)/(5,-57)、ノッチ最深 (0,-51)
+      const SD =
+        "M0,4 " +
+        "C-12,-2 -24,-26 -20,-46 " +   // 左外側カーブ
+        "C-17,-55 -10,-62 -5,-57 " +   // 左先端へ
+        "L0,-51 " +                     // ノッチ最深部（中央へ折れ込み）
+        "L5,-57 " +                     // 右先端へ接続
+        "C10,-62 17,-55 20,-46 " +      // 右先端から
+        "C24,-26 12,-2 0,4 Z";          // 右外側カーブ
+      for (let i = 0; i < 5; i++) {
+        const petal = document.createElementNS(SVG, "path");
+        petal.setAttribute("d", SD);
+        petal.setAttribute("fill", `url(#fg-${colorKey})`);
+        petal.setAttribute("stroke", c.petalDark);
+        petal.setAttribute("stroke-width", "2");
+        petal.setAttribute("stroke-linejoin", "round");
+        petal.setAttribute("transform", `rotate(${i * 72})`);
         head.appendChild(petal);
       }
-      // 大きな円形の花体
-      const outer = document.createElementNS(SVG, "circle");
-      outer.setAttribute("cx", "0");
-      outer.setAttribute("cy", "-14");
-      outer.setAttribute("r", "34");
-      outer.setAttribute("fill", c.petal);
-      outer.setAttribute("stroke", c.petalDark);
-      outer.setAttribute("stroke-width", "2.5");
-      head.appendChild(outer);
-      // 中央
-      const center = document.createElementNS(SVG, "circle");
-      center.setAttribute("cx", "0");
-      center.setAttribute("cy", "-14");
-      center.setAttribute("r", "11");
-      center.setAttribute("fill", c.center);
-      center.setAttribute("stroke", c.centerDark);
-      center.setAttribute("stroke-width", "2.5");
-      head.appendChild(center);
-      // 中央の小さなしべ（点々）
-      for (let i = 0; i < 7; i++) {
-        const a = (Math.PI * 2 / 7) * i;
-        const dot = document.createElementNS(SVG, "circle");
-        dot.setAttribute("cx", (Math.cos(a) * 4.5).toFixed(1));
-        dot.setAttribute("cy", (Math.sin(a) * 4.5 - 14).toFixed(1));
-        dot.setAttribute("r", "1.6");
-        dot.setAttribute("fill", c.centerDark);
-        head.appendChild(dot);
+      // 花芯（黄緑の丸）
+      const ctr = document.createElementNS(SVG, "circle");
+      ctr.setAttribute("r", "10");
+      ctr.setAttribute("fill", "url(#fg-center)");
+      ctr.setAttribute("stroke", c.centerDark);
+      ctr.setAttribute("stroke-width", "2");
+      head.appendChild(ctr);
+      // おしべ（5本。線＋先端丸）
+      for (let i = 0; i < 5; i++) {
+        const a = (Math.PI * 2 / 5) * i - Math.PI / 2;
+        const len = 14 + Math.random() * 4;
+        const ex = (Math.cos(a) * len).toFixed(1);
+        const ey = (Math.sin(a) * len).toFixed(1);
+        const line = document.createElementNS(SVG, "line");
+        line.setAttribute("x1", "0"); line.setAttribute("y1", "0");
+        line.setAttribute("x2", ex); line.setAttribute("y2", ey);
+        line.setAttribute("stroke", c.centerDark);
+        line.setAttribute("stroke-width", "1.4");
+        head.appendChild(line);
+        const tip = document.createElementNS(SVG, "circle");
+        tip.setAttribute("cx", ex); tip.setAttribute("cy", ey);
+        tip.setAttribute("r", "2.2");
+        tip.setAttribute("fill", c.centerDark);
+        head.appendChild(tip);
       }
     }
 
     return head;
   }
 
-  return {
-    createFlowerNode,
-    clearOccupied,
-    FIELD,
-  };
+  return { createFlowerNode, clearOccupied, FIELD };
 })();

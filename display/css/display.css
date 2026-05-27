@@ -109,22 +109,15 @@ html, body {
   border-radius: 2px;
 }
 
-/* 花の咲くアニメ：透明度＋わずかな拡大（手描き風にやさしく） */
+/* 花：bloom.js の rAF 落下アニメが opacity と outer の transform を制御する。
+   CSS は transform の基準点のみ定義し、初期状態は透明。 */
 .flower {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  transform: scale(0.25) rotate(var(--seed-rot, 0deg));
-  animation: bloom 1.6s cubic-bezier(.2,.9,.3,1.1) forwards;
-  animation-delay: var(--bloom-delay, 0s);
-}
-@keyframes bloom {
-  0%   { opacity: 0; transform: scale(0.25) rotate(var(--seed-rot, 0deg)); }
-  55%  { opacity: 1; transform: scale(1.12) rotate(var(--seed-rot, 0deg)); }
-  100% { opacity: 1; transform: scale(1)    rotate(var(--seed-rot, 0deg)); }
 }
 
-/* 既に咲き終わった花（差分以外）は静止状態 */
+/* 初回ロード分（settled）：着地済み・静止状態で即表示 */
 .flower.settled {
   opacity: 1;
   transform: scale(1) rotate(var(--seed-rot, 0deg));

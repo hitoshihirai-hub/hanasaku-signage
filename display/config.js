@@ -2,10 +2,10 @@
    プロトタイプ段階の暫定値。本番では値を差し替える。 */
 window.DISPLAY_CONFIG = {
   // データ取得方式: "dummy" = 内部ダミー / "api" = サーバー /api/flowers を呼ぶ
-  source: "dummy",
+  source: "api",
 
   // サーバーAPIの基点（source = "api" のときに使用）
-  apiBase: "http://localhost:8000",
+  apiBase: "https://hanasaku-api.onrender.com",
 
   // ポーリング間隔（ミリ秒）。本番は OTOMO の読込周期に合わせて検討。
   // プロトタイプは見栄え確認のため短めの 30秒。
