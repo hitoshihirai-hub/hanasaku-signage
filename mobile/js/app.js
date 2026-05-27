@@ -212,10 +212,13 @@
 
   // ── 詳細説明（05/06/08/09/10） ────────────────────────────
   function buildDetailHTML(sub) {
+    // signNo が 2桁の場合 img/sign{signNo}.jpg を使用
+    const imgSrc = sub.signNo ? `img/sign${sub.signNo}.jpg` : null;
     const photoHTML = sub.photoCaption ? `
-      <div class="sign-detail__photo">
-        <span class="sign-detail__photo-label">📷 ${sub.photoCaption}</span>
-      </div>` : "";
+      <figure class="sign-detail__photo">
+        ${imgSrc ? `<img src="${imgSrc}" alt="${sub.photoCaption}" class="sign-detail__photo-img" loading="lazy">` : ""}
+        <figcaption class="sign-detail__photo-caption">▲ ${sub.photoCaption}</figcaption>
+      </figure>` : "";
     return `
       <div class="sign-detail">
         <div class="sign-detail__titlebar" style="background:${sub.headerBg}">
