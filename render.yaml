@@ -1,0 +1,17 @@
+# Render Blueprint 設定
+# Render.com 上で「New → Blueprint」から連携すると自動読み込みされる。
+# ドキュメント: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: hanasaku-api          # Render 上のサービス名（変更可）
+    runtime: python
+    rootDir: server             # server/ ディレクトリを作業ディレクトリにする
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    plan: free                  # 無料プラン。15分無アクセスでスリープ。
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      - key: DEMO_MODE
+        value: "1"               # デモ用 seed エンドポイントを有効化。本番では削除。

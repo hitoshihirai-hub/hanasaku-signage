@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>みんなで咲かす未来の街</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/display.css">
+</head>
+<body>
+  <div class="stage" id="stage">
+
+    <!-- 背景 SVG（空・太陽・雲・街並み） -->
+    <svg class="scene" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <!-- 空のグラデーション -->
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#B5DAEC"/>
+          <stop offset="100%" stop-color="#D8ECF4"/>
+        </linearGradient>
+        <!-- 紙のざらつき風フィルタ -->
+        <filter id="paper" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+          <feColorMatrix values="0 0 0 0 0.95
+                                  0 0 0 0 0.88
+                                  0 0 0 0 0.78
+                                  0 0 0 0.08 0"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+        <!-- 手描きのにじみ風 -->
+        <filter id="wobble">
+          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="5"/>
+          <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+        </filter>
+      </defs>
+
+      <!-- 空 -->
+      <rect x="0" y="0" width="1080" height="1920" fill="url(#sky)"/>
+
+      <!-- 紙のテクスチャ -->
+      <rect x="0" y="0" width="1080" height="1920" filter="url(#paper)" opacity="0.45"/>
+
+      <!-- 太陽 -->
+      <g filter="url(#wobble)">
+        <circle cx="820" cy="280" r="120" fill="#FFE08A" opacity="0.85"/>
+        <circle cx="820" cy="280" r="92"  fill="#FFD15E" opacity="0.9"/>
+      </g>
+
+      <!-- 雲（手描き風の丸の連なり） -->
+      <g class="clouds" filter="url(#wobble)" fill="#FFF8EC" opacity="0.92">
+        <g transform="translate(120,420)">
+          <ellipse cx="0"   cy="0"  rx="70" ry="32"/>
+          <ellipse cx="55"  cy="-10" rx="50" ry="28"/>
+          <ellipse cx="-50" cy="8"  rx="45" ry="25"/>
+        </g>
+        <g transform="translate(700,560)">
+          <ellipse cx="0"   cy="0"  rx="60" ry="26"/>
+          <ellipse cx="48"  cy="-6" rx="42" ry="22"/>
+          <ellipse cx="-44" cy="6"  rx="38" ry="20"/>
+        </g>
+      </g>
+
+      <!-- 遠景の街（淡い） -->
+      <g class="city-back" filter="url(#wobble)" fill="#C99277" opacity="0.55">
+        <path d="
+          M0,1280
+          L0,1180 L60,1180 L60,1140 L120,1140 L120,1190
+          L200,1190 L200,1110 L260,1110 L260,1080 L320,1080 L320,1200
+          L400,1200 L400,1130 L470,1130 L470,1170 L540,1170 L540,1100
+          L620,1100 L620,1160 L700,1160 L700,1120 L780,1120 L780,1180
+          L860,1180 L860,1140 L940,1140 L940,1200 L1020,1200 L1020,1160
+          L1080,1160 L1080,1280 Z"/>
+      </g>
+
+      <!-- 手前の街（濃い）— 一般のビル群 -->
+      <g class="city-front" filter="url(#wobble)" fill="#8C5A3D">
+        <path d="
+          M0,1920
+          L0,1420
+          L80,1420 L80,1360 L120,1360 L120,1420
+          L300,1420 L300,1300 L370,1300 L370,1380 L430,1380 L430,1340
+          L520,1340 L520,1280 L600,1280 L600,1360 L680,1360 L680,1320
+          L760,1320 L760,1400 L815,1400 L815,1420
+          L955,1420 L1000,1420 L1000,1380 L1080,1380 L1080,1920 Z"/>
+        <!-- 窓 -->
+        <g fill="#FFE9B8" opacity="0.85">
+          <rect x="40"  y="1480" width="20" height="28" rx="3"/>
+          <rect x="40"  y="1530" width="20" height="28" rx="3"/>
+          <rect x="320" y="1340" width="20" height="28" rx="3"/>
+          <rect x="320" y="1390" width="20" height="28" rx="3"/>
+          <rect x="540" y="1320" width="20" height="28" rx="3"/>
+          <rect x="540" y="1370" width="20" height="28" rx="3"/>
+          <rect x="620" y="1400" width="20" height="28" rx="3"/>
+          <rect x="780" y="1440" width="20" height="28" rx="3"/>
+          <rect x="1010" y="1430" width="20" height="28" rx="3"/>
+          <rect x="1040" y="1430" width="20" height="28" rx="3"/>
+        </g>
+      </g>
+
+      <!-- 大阪城（左側）— 周辺ビルと同じ茶。最上段が周辺ビル top と同等高さ -->
+      <g class="landmark landmark-castle" filter="url(#wobble)" fill="#8C5A3D">
+        <!-- 石垣（傾斜トラペ） -->
+        <path d="M130,1420 L165,1330 L235,1330 L270,1420 Z"/>
+        <!-- 1F本体＋庇 -->
+        <rect x="170" y="1306" width="60" height="24"/>
+        <path d="M155,1306 L168,1296 L168,1292 L232,1292 L232,1296 L245,1306 Z"/>
+        <!-- 2F -->
+        <rect x="178" y="1276" width="44" height="16"/>
+        <path d="M166,1276 L177,1267 L177,1264 L223,1264 L223,1267 L234,1276 Z"/>
+        <!-- 3F -->
+        <rect x="186" y="1252" width="28" height="12"/>
+        <path d="M177,1252 L185,1244 L185,1241 L215,1241 L215,1244 L223,1252 Z"/>
+        <!-- 4F（最上層） -->
+        <rect x="192" y="1232" width="16" height="9"/>
+        <path d="M186,1232 L191,1226 L191,1224 L209,1224 L209,1226 L214,1232 Z"/>
+        <!-- 鯱（最上段屋根の両端） -->
+        <path d="M194,1224 q-1.5,-4 -2,-5 q2.5,-0.5 2.5,1.5 q0.5,-1.5 2.5,-1.5 q-1,2.5 -1.5,4 Z"/>
+        <path d="M206,1224 q1.5,-4 2,-5 q-2.5,-0.5 -2.5,1.5 q-0.5,-1.5 -2.5,-1.5 q1,2.5 1.5,4 Z"/>
+        <!-- 城に灯る窓（金色・控えめ） -->
+        <g fill="#FFD78A" opacity="0.9">
+          <rect x="178" y="1313" width="6" height="8" rx="1"/>
+          <rect x="192" y="1313" width="6" height="8" rx="1"/>
+          <rect x="206" y="1313" width="6" height="8" rx="1"/>
+          <rect x="220" y="1313" width="6" height="8" rx="1"/>
+          <rect x="185" y="1282" width="5" height="7" rx="1"/>
+          <rect x="210" y="1282" width="5" height="7" rx="1"/>
+        </g>
+      </g>
+
+      <!-- 通天閣（右側）— 周辺より少し高い程度で塔らしさは残す -->
+      <g class="landmark landmark-tower" filter="url(#wobble)" fill="#8C5A3D">
+        <!-- 基部の四角い建物 -->
+        <rect x="825" y="1360" width="120" height="60"/>
+        <!-- タワー下段（テーパー） -->
+        <path d="M848,1360 L860,1270 L900,1270 L912,1360 Z"/>
+        <!-- 中間展望デッキ（小） -->
+        <rect x="852" y="1262" width="56" height="10"/>
+        <!-- タワー中段 -->
+        <path d="M866,1262 L872,1210 L888,1210 L894,1262 Z"/>
+        <!-- 上部展望デッキ（通天閣象徴の王冠） -->
+        <rect x="854" y="1190" width="52" height="22"/>
+        <!-- 上部展望デッキの屋根 -->
+        <path d="M850,1190 L862,1182 L898,1182 L910,1190 Z"/>
+        <!-- スパイア下部 -->
+        <rect x="875" y="1158" width="10" height="24"/>
+        <!-- アンテナ球 -->
+        <circle cx="880" cy="1155" r="5"/>
+        <!-- 最上部アンテナ -->
+        <rect x="878" y="1130" width="4" height="24"/>
+        <!-- 通天閣に灯る窓（暖色） -->
+        <g fill="#FFD78A" opacity="0.9">
+          <rect x="835" y="1380" width="6" height="9" rx="1"/>
+          <rect x="850" y="1380" width="6" height="9" rx="1"/>
+          <rect x="922" y="1380" width="6" height="9" rx="1"/>
+          <rect x="937" y="1380" width="6" height="9" rx="1"/>
+          <rect x="860" y="1196" width="40" height="4" rx="1.5"/>
+          <rect x="860" y="1204" width="40" height="3" rx="1.5"/>
+          <rect x="858" y="1265" width="44" height="3" rx="1.5"/>
+        </g>
+      </g>
+
+      <!-- 地面（草地） -->
+      <g class="ground" filter="url(#wobble)">
+        <path d="M0,1920 L0,1700 Q540,1640 1080,1700 L1080,1920 Z" fill="#A8C97A"/>
+        <path d="M0,1920 L0,1820 Q540,1780 1080,1820 L1080,1920 Z" fill="#8FB85F"/>
+      </g>
+    </svg>
+
+    <!-- 花レイヤー（SVG。動的に花を追加） -->
+    <svg class="flowers" id="flowers-layer" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <filter id="flower-wobble">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="9"/>
+          <feDisplacementMap in="SourceGraphic" scale="1.6"/>
+        </filter>
+      </defs>
+      <g id="flowers-root"></g>
+    </svg>
+
+    <!-- カウンタ -->
+    <header class="counter" id="counter">
+      <div class="counter__title">みんなで咲かす未来の街</div>
+      <div class="counter__row">
+        <div class="counter__cell">
+          <div class="counter__label">本日</div>
+          <div class="counter__num" id="count-today">0</div>
+          <div class="counter__unit">輪</div>
+        </div>
+        <div class="counter__divider"></div>
+        <div class="counter__cell">
+          <div class="counter__label">累計</div>
+          <div class="counter__num" id="count-total">0</div>
+          <div class="counter__unit">輪</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- デバッグ表示（既定でオフ） -->
+    <div class="debug" id="debug-panel" hidden>
+      <div>DEBUG <span id="debug-mode"></span></div>
+      <div>last poll: <span id="debug-last"></span></div>
+      <div>since id: <span id="debug-since"></span></div>
+      <div class="debug__hint">F=花追加 / R=リセット / D=このパネル切替</div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/bloom.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

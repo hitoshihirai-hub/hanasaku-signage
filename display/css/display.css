@@ -1,0 +1,158 @@
+/* 「みんなで咲かす未来の街」 display 用スタイル
+   縦型サイネージ（9:16 / 1080x1920 想定）を基準に、画面サイズに合わせて
+   .stage が縦比を維持しつつ最大化される。 */
+
+:root {
+  --warm-paper: #FFF5E1;
+  --warm-ink:   #5A3E2B;
+  --warm-ink-soft: #8C6A4E;
+  --warm-accent: #E8965A;
+  --warm-leaf:   #5C8A3A;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #2a1f15;       /* ステージ外の余白色（暗めにして額装風に） */
+  overflow: hidden;
+  font-family: "Klee One", "Caveat", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  color: var(--warm-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ステージ：縦9:16の固定比率コンテナ。画面に内接させる */
+.stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width:  min(100vw, calc(100vh * 9 / 16));
+  height: min(100vh, calc(100vw * 16 / 9));
+  transform: translate(-50%, -50%);
+  background: var(--warm-paper);
+  box-shadow: 0 0 60px rgba(0,0,0,0.4);
+  overflow: hidden;
+}
+
+/* 背景の風景・花レイヤー */
+.scene, .flowers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.flowers { pointer-events: none; }
+
+/* カウンタ（上部） */
+.counter {
+  position: absolute;
+  top: 3.2%;
+  left: 4%;
+  right: 4%;
+  padding: 1.6em 1.4em 1.2em;
+  background: rgba(255, 245, 225, 0.88);
+  border: 2px solid var(--warm-ink-soft);
+  border-radius: 22px;
+  box-shadow: 0 6px 0 rgba(140,106,78,0.18), 0 0 24px rgba(255,200,140,0.35);
+  text-align: center;
+  backdrop-filter: blur(2px);
+}
+.counter__title {
+  font-family: "Klee One", "Caveat", sans-serif;
+  font-weight: 600;
+  font-size: clamp(20px, 2.6vw, 44px);
+  color: var(--warm-ink);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.45em;
+}
+.counter__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.2em;
+}
+.counter__cell {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+}
+.counter__label {
+  font-size: clamp(14px, 1.5vw, 24px);
+  color: var(--warm-ink-soft);
+  margin-right: 0.3em;
+}
+.counter__num {
+  font-family: "Caveat", "Klee One", sans-serif;
+  font-weight: 700;
+  font-size: clamp(40px, 5.8vw, 96px);
+  line-height: 1;
+  color: var(--warm-accent);
+  text-shadow: 0 2px 0 rgba(140,106,78,0.18);
+  min-width: 1.6em;
+  text-align: right;
+  transition: transform 0.4s cubic-bezier(.34,1.7,.64,1);
+}
+.counter__num.pop { transform: scale(1.18); }
+.counter__unit {
+  font-size: clamp(14px, 1.4vw, 22px);
+  color: var(--warm-ink-soft);
+}
+.counter__divider {
+  width: 2px;
+  height: 2.4em;
+  background: var(--warm-ink-soft);
+  opacity: 0.35;
+  border-radius: 2px;
+}
+
+/* 花の咲くアニメ：透明度＋わずかな拡大（手描き風にやさしく） */
+.flower {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.25) rotate(var(--seed-rot, 0deg));
+  animation: bloom 1.6s cubic-bezier(.2,.9,.3,1.1) forwards;
+  animation-delay: var(--bloom-delay, 0s);
+}
+@keyframes bloom {
+  0%   { opacity: 0; transform: scale(0.25) rotate(var(--seed-rot, 0deg)); }
+  55%  { opacity: 1; transform: scale(1.12) rotate(var(--seed-rot, 0deg)); }
+  100% { opacity: 1; transform: scale(1)    rotate(var(--seed-rot, 0deg)); }
+}
+
+/* 既に咲き終わった花（差分以外）は静止状態 */
+.flower.settled {
+  opacity: 1;
+  transform: scale(1) rotate(var(--seed-rot, 0deg));
+  animation: none;
+}
+
+/* やさしく揺れる（咲いた後） */
+.flower.sway {
+  animation: sway 5.2s ease-in-out infinite;
+  animation-delay: var(--sway-delay, 0s);
+}
+@keyframes sway {
+  0%, 100% { transform: scale(1) rotate(var(--seed-rot, 0deg)); }
+  50%      { transform: scale(1.02) rotate(calc(var(--seed-rot, 0deg) + 2deg)); }
+}
+
+/* デバッグパネル */
+.debug {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  border-radius: 8px;
+  z-index: 100;
+}
+.debug__hint { opacity: 0.7; margin-top: 6px; }
