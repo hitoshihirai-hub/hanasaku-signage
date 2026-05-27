@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>みんなで咲かす未来の街 — GREEN×EXPO 2027 大阪府ブース</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background: #EDE0D0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      color: #5A3E2B;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .hero__emoji { font-size: 56px; margin-bottom: 12px; }
+    .hero__title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #4A3020;
+    }
+    .hero__sub {
+      font-size: 13px;
+      color: #8C6A4E;
+      margin-top: 6px;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 680px;
+      width: 100%;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 280px;
+      text-align: center;
+      text-decoration: none;
+      color: #5A3E2B;
+      box-shadow: 0 4px 20px rgba(90,62,43,0.12);
+      transition: transform 0.18s, box-shadow 0.18s;
+      display: block;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(90,62,43,0.18);
+    }
+    .card__emoji { font-size: 44px; margin-bottom: 10px; }
+    .card__label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #B08060;
+      margin-bottom: 4px;
+    }
+    .card__title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .card__desc {
+      font-size: 13px;
+      color: #8C6A4E;
+      line-height: 1.7;
+    }
+    .card--display { border-top: 5px solid #5C8A3A; }
+    .card--mobile  { border-top: 5px solid #E8965A; }
+    .footer {
+      margin-top: 48px;
+      font-size: 12px;
+      color: #B08060;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero__emoji">🌸</div>
+    <p class="hero__title">みんなで咲かす未来の街</p>
+    <p class="hero__sub">GREEN×EXPO 2027 大阪府ブース — プロトタイプ</p>
+  </div>
+
+  <div class="cards">
+    <a class="card card--display" href="display/">
+      <div class="card__emoji">🖥️</div>
+      <div class="card__label">SIGNAGE</div>
+      <div class="card__title">サイネージ画面</div>
+      <p class="card__desc">会場の大型ディスプレイ用。<br>訪問者から届いた花が咲くアニメーション画面。</p>
+    </a>
+    <a class="card card--mobile" href="mobile/">
+      <div class="card__emoji">📱</div>
+      <div class="card__label">MOBILE</div>
+      <div class="card__title">スタンプラリー</div>
+      <p class="card__desc">訪問者がスマホで参加。<br>スポットを巡ってスタンプを集め、花を送る。</p>
+    </a>
+  </div>
+
+  <p class="footer">© 2025 大阪府 / GREEN×EXPO 2027 大阪府ブース プロトタイプ</p>
+</body>
+</html>
