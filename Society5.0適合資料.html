@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Society 5.0 適合性 ― みんなで咲かす未来の街</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.7;
+    color: #2C1A0A;
+    background: #E0D4C4;
+  }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; width: 210mm; min-height: 297mm; }
+    .no-print { display: none; }
+  }
+
+  .page {
+    width: 794px;
+    min-height: 1123px;
+    margin: 24px auto;
+    background: #FDFAF5;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── ヘッダー ─────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #1E3A5F 0%, #2A5C8A 50%, #4A7C3A 100%);
+    color: #fff;
+    padding: 26px 40px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: "🌐";
+    position: absolute;
+    right: 28px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 76px;
+    opacity: 0.16;
+  }
+  .header__tag {
+    font-size: 8pt;
+    letter-spacing: 0.2em;
+    color: #BBD8EC;
+    margin-bottom: 6px;
+  }
+  .header__title {
+    font-family: "Noto Serif JP", serif;
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .header__sub {
+    font-size: 9pt;
+    color: #C8E0D0;
+    margin-top: 6px;
+  }
+
+  /* ── 本文 ──────────────────────────────── */
+  .body {
+    padding: 24px 40px 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* ── Society5.0 定義ボックス ─────────────── */
+  .def {
+    background: #EAF3FB;
+    border-left: 4px solid #2A5C8A;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 18px;
+    font-size: 9.5pt;
+    line-height: 1.75;
+    color: #1E3A5F;
+  }
+  .def strong { color: #14304F; }
+
+  /* ── セクション ─────────────────────────── */
+  .section__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid #2A5C8A;
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+  }
+  .section__num {
+    background: #2A5C8A;
+    color: #fff;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 3px;
+  }
+  .section__title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #1E3A5F;
+  }
+
+  /* ── サイバー×フィジカル融合図 ──────────── */
+  .cps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    text-align: center;
+  }
+  .cps-box {
+    flex: 1;
+    border-radius: 10px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .cps-box--cyber {
+    background: #E3EEF9;
+    border: 1.5px solid #2A5C8A;
+  }
+  .cps-box--phys {
+    background: #EAF3E0;
+    border: 1.5px solid #4A7C3A;
+  }
+  .cps-box__emoji { font-size: 26px; }
+  .cps-box__label {
+    font-size: 8pt;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+  .cps-box--cyber .cps-box__label { color: #1E3A5F; }
+  .cps-box--phys .cps-box__label { color: #2E5520; }
+  .cps-box__desc { font-size: 8pt; color: #5C5040; line-height: 1.5; margin-top: 4px; }
+  .cps-fuse {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    color: #6B3D1E;
+  }
+  .cps-fuse__icon { font-size: 22px; }
+  .cps-fuse__txt { font-size: 7pt; color: #8C6A4E; margin-top: 2px; }
+
+  /* ── 適合性カード（3つの柱） ────────────── */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  .pillar {
+    border: 1.5px solid #D4B89A;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .pillar__head {
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 9.5pt;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pillar:nth-child(1) .pillar__head { background: #2A5C8A; }
+  .pillar:nth-child(2) .pillar__head { background: #4A7C3A; }
+  .pillar:nth-child(3) .pillar__head { background: #C57A2A; }
+  .pillar__body {
+    padding: 10px 12px;
+    font-size: 8.5pt;
+    line-height: 1.65;
+    color: #4A3520;
+  }
+  .pillar__body strong { color: #2C1A0A; }
+
+  /* ── 対応表 ──────────────────────────────── */
+  table.map {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.8pt;
+  }
+  table.map th {
+    background: #2A5C8A;
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    padding: 6px 10px;
+    border: 1px solid #1E3A5F;
+  }
+  table.map td {
+    padding: 6px 10px;
+    border: 1px solid #D4B89A;
+    background: #fff;
+    line-height: 1.55;
+    vertical-align: top;
+  }
+  table.map td:first-child {
+    background: #F0E4D4;
+    font-weight: 700;
+    color: #1E3A5F;
+    white-space: nowrap;
+    width: 30%;
+  }
+  table.map tr:nth-child(even) td { background: #FBF6EF; }
+  table.map tr:nth-child(even) td:first-child { background: #ECE0CE; }
+
+  /* ── 展示連動ハイライト ──────────────────── */
+  .highlight {
+    background: linear-gradient(135deg, #FFF3E0 0%, #EAF3E0 100%);
+    border: 1.5px solid #B8C99A;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 9pt;
+    line-height: 1.75;
+    color: #3A4520;
+  }
+  .highlight strong { color: #2E5520; }
+  .highlight .quote {
+    display: block;
+    font-style: italic;
+    color: #1E4A7A;
+    border-left: 3px solid #2A5C8A;
+    padding-left: 12px;
+    margin: 6px 0;
+    font-size: 8.8pt;
+  }
+
+  /* ── フッター ────────────────────────────── */
+  .footer {
+    border-top: 1px solid #D4B89A;
+    padding: 10px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: #9B7A5A;
+  }
+
+  .print-btn {
+    display: block;
+    width: 794px;
+    margin: 0 auto 8px;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    background: #2A5C8A;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+  }
+  .print-btn:hover { background: #3A6C9A; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+
+<div class="page">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header__tag">SOCIETY 5.0 適合性 説明資料</div>
+    <div class="header__title">「みんなで咲かす未来の街」は<br>Society 5.0 を体現する</div>
+    <div class="header__sub">GREEN×EXPO 2027 大阪府ブース ― 参加型サイネージ体験</div>
+  </div>
+
+  <div class="body">
+
+    <!-- Society5.0定義 -->
+    <div class="def">
+      <strong>Society 5.0 とは</strong> ― サイバー空間（仮想空間）とフィジカル空間（現実空間）を高度に融合させ、経済発展と社会的課題の解決を両立する、<strong>人間中心（ヒューマンセントリック）の社会</strong>。狩猟・農耕・工業・情報社会に続く、日本が提唱する未来社会像です。
+    </div>
+
+    <!-- 1. サイバー×フィジカル融合 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">1</span>
+        <span class="section__title">本システムが実現する「サイバー×フィジカルの融合」</span>
+      </div>
+      <div class="cps">
+        <div class="cps-box cps-box--cyber">
+          <span class="cps-box__emoji">📱</span>
+          <span class="cps-box__label">サイバー空間</span>
+          <span class="cps-box__desc">来場者がスマホで花を選び、<br>想いを込めて送信</span>
+        </div>
+        <div class="cps-fuse">
+          <span class="cps-fuse__icon">⇄</span>
+          <span class="cps-fuse__txt">リアルタイム<br>融合</span>
+        </div>
+        <div class="cps-box cps-box--phys">
+          <span class="cps-box__emoji">🖥️🌸</span>
+          <span class="cps-box__label">フィジカル空間</span>
+          <span class="cps-box__desc">送られた花が大型サイネージの<br>「街」に咲き、皆で共有</span>
+        </div>
+      </div>
+      <p style="font-size:8.8pt; color:#5C5040; margin-top:8px; text-align:center;">
+        個人のデジタルな選択（サイバー）が、現実空間の集合的な風景（フィジカル）へ即座に反映される —
+        <strong style="color:#1E3A5F;">これはSociety 5.0が描く社会の縮図そのものです。</strong>
+      </p>
+    </div>
+
+    <!-- 2. 3つの柱 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">2</span>
+        <span class="section__title">Society 5.0 の理念との3つの合致点</span>
+      </div>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar__head">🧑‍🤝‍🧑 人間中心</div>
+          <div class="pillar__body">
+            技術を「見せる」のではなく、来場者<strong>一人ひとりの参加と感性</strong>を主役に。年齢・国籍を問わず直感的に楽しめる<strong>インクルーシブな設計</strong>で、誰もが取り残されない体験を提供します。
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar__head">💚 Well-being</div>
+          <div class="pillar__body">
+            自分の花が街に咲き、<strong>他者の花とともに風景をつくる</strong>体験が、つながりと達成感という<strong>「幸福（Well-being）」</strong>を醸成。Society 5.0が目指す心の豊かさを体感できます。
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar__head">🌱 課題解決の両立</div>
+          <div class="pillar__body">
+            楽しい体験を通じて<strong>環境・緑地・地域文化への関心</strong>を自然に喚起。「経済発展と社会的課題解決の両立」という理念を、<strong>体験価値と啓発</strong>の形で実現します。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 対応表 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">3</span>
+        <span class="section__title">Society 5.0 要素技術・概念との対応</span>
+      </div>
+      <table class="map">
+        <tr>
+          <th>Society 5.0 の要素</th>
+          <th>本システムでの実装</th>
+        </tr>
+        <tr>
+          <td>サイバーフィジカルシステム</td>
+          <td>スマホ入力（サイバー）→ API集約 → サイネージ表示（フィジカル）を30秒で連動</td>
+        </tr>
+        <tr>
+          <td>データ駆動・リアルタイム可視化</td>
+          <td>来場者の参加データをリアルタイムに集約し、「咲く花の数」として動的に可視化</td>
+        </tr>
+        <tr>
+          <td>共創・参加型社会</td>
+          <td>個々の選択が積み重なり、誰のものでもある「みんなの未来の街」を共創</td>
+        </tr>
+        <tr>
+          <td>ユニバーサルなアクセス</td>
+          <td>専用アプリ不要。QRコードからWebで誰でも即参加（ダウンロード障壁ゼロ）</td>
+        </tr>
+        <tr>
+          <td>持続可能性（SDGs／GX）</td>
+          <td>GREEN×EXPOの理念に沿い、緑・自然・地域文化への意識を体験的に醸成</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 4. 展示連動ハイライト -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">4</span>
+        <span class="section__title">展示テーマとの一貫性 ― 「未来のゲート」との連動</span>
+      </div>
+      <div class="highlight">
+        本ブースのサイン03「未来のゲート」は、まさにSociety 5.0をテーマに掲げています。
+        <span class="quote">「未来のゲートは、Society5.0を目指す『人の幸福（Well-being）』にフォーカスした心地よい空間です」（現地サイン文より）</span>
+        本サイネージ体験は、この展示メッセージを<strong>来場者自身の能動的なアクション（花を咲かせる）として体現する装置</strong>です。展示が「語る」未来像を、来場者が「参加して創る」ことで、ブース全体のテーマに一貫性と説得力を与えます。
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- フッター -->
+  <div class="footer">
+    <span>GREEN×EXPO 2027 大阪府ブース ― Society 5.0 適合性 説明資料</span>
+    <span>大阪府 / 2026年6月</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
