@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTOMO事業者向け確認資料 ― みんなで咲かす未来の街</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 10pt;
+    line-height: 1.8;
+    color: #2C1A0A;
+    background: #E0D4C4;
+  }
+
+  @page { size: A4; margin: 0; }
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; width: 210mm; min-height: 297mm; }
+    .no-print { display: none; }
+  }
+
+  .page {
+    width: 794px;
+    min-height: 1123px;
+    margin: 24px auto;
+    background: #FDFAF5;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── ヘッダー ─────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #3B2010 0%, #6B3D1E 100%);
+    color: #fff;
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header__left {}
+  .header__tag {
+    font-size: 8pt;
+    letter-spacing: 0.2em;
+    color: #D4B89A;
+    margin-bottom: 6px;
+  }
+  .header__title {
+    font-size: 17pt;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .header__sub {
+    font-size: 9pt;
+    color: #C8A070;
+    margin-top: 4px;
+  }
+  .header__right {
+    text-align: right;
+    font-size: 8.5pt;
+    color: #C0A070;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── 本文 ──────────────────────────────── */
+  .body {
+    padding: 28px 40px 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── セクション ─────────────────────────── */
+  .section {}
+  .section__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid #6B3D1E;
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+  }
+  .section__num {
+    background: #6B3D1E;
+    color: #fff;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 3px;
+  }
+  .section__title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #4A2810;
+  }
+
+  /* ── 概要ボックス ───────────────────────── */
+  .overview {
+    background: #FFF3E0;
+    border: 1.5px solid #D4B89A;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 9.5pt;
+    line-height: 1.75;
+    color: #4A2810;
+  }
+
+  /* ── 2カラムグリッド ─────────────────────── */
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ── スペック表 ──────────────────────────── */
+  table.spec {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+  table.spec th {
+    background: #F0E4D4;
+    color: #4A2810;
+    font-weight: 700;
+    text-align: left;
+    padding: 5px 10px;
+    border: 1px solid #D4B89A;
+    width: 38%;
+    white-space: nowrap;
+  }
+  table.spec td {
+    padding: 5px 10px;
+    border: 1px solid #D4B89A;
+    background: #fff;
+    line-height: 1.6;
+  }
+  table.spec td code {
+    font-family: "Consolas", monospace;
+    font-size: 8.5pt;
+    background: #F5EDE0;
+    padding: 1px 5px;
+    border-radius: 3px;
+    word-break: break-all;
+  }
+
+  /* ── 確認チェックリスト ─────────────────── */
+  .checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 9.5pt;
+    line-height: 1.6;
+  }
+  .check-box {
+    flex-shrink: 0;
+    width: 16px; height: 16px;
+    border: 1.5px solid #9B6A3A;
+    border-radius: 3px;
+    margin-top: 2px;
+  }
+  .check-label { flex: 1; }
+  .check-label strong { color: #4A2810; }
+  .check-label .note {
+    display: block;
+    font-size: 8.5pt;
+    color: #8C6A4E;
+    margin-top: 1px;
+  }
+
+  /* ── 注意タグ ────────────────────────────── */
+  .tag {
+    display: inline-block;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .tag--warn { background: #FFF3CD; color: #856404; border: 1px solid #FCEDB1; }
+  .tag--req  { background: #F8D7DA; color: #721C24; border: 1px solid #F5C6CB; }
+  .tag--info { background: #D1ECF1; color: #0C5460; border: 1px solid #BEE5EB; }
+
+  /* ── フロー図（横並び） ──────────────────── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-size: 8.5pt;
+    text-align: center;
+  }
+  .flow-node {
+    flex: 1;
+    background: #FFF3E0;
+    border: 1.5px solid #D4B89A;
+    border-radius: 8px;
+    padding: 8px 6px;
+    min-width: 0;
+  }
+  .flow-node__emoji { font-size: 18px; display: block; margin-bottom: 3px; }
+  .flow-node__name { font-weight: 700; font-size: 8.5pt; color: #4A2810; }
+  .flow-node__desc { font-size: 7.5pt; color: #8C6A4E; line-height: 1.4; margin-top: 2px; }
+  .flow-arrow {
+    flex-shrink: 0;
+    font-size: 16px;
+    color: #B08060;
+    padding: 0 4px;
+  }
+  .flow-node--otomo {
+    background: #E8F4FD;
+    border-color: #1E6FA8;
+  }
+  .flow-node--otomo .flow-node__name { color: #1E4A7A; }
+
+  /* ── フッター ────────────────────────────── */
+  .footer {
+    border-top: 1px solid #D4B89A;
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: #9B7A5A;
+  }
+
+  /* ── 印刷ボタン ─────────────────────────── */
+  .print-btn {
+    display: block;
+    width: 794px;
+    margin: 0 auto 8px;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    background: #6B3D1E;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+  }
+  .print-btn:hover { background: #8C5A3D; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+
+<div class="page">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header__left">
+      <div class="header__tag">OTOMO事業者向け 技術確認資料</div>
+      <div class="header__title">みんなで咲かす未来の街<br>― サイネージ連携 確認事項 ―</div>
+      <div class="header__sub">GREEN×EXPO 2027 大阪府ブース</div>
+    </div>
+    <div class="header__right">
+      Ver. 1.0　2026年6月<br>
+      大阪府 / プロトタイプ段階
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 1. システム概要 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">1</span>
+        <span class="section__title">システム概要とOTOMO側の役割</span>
+      </div>
+      <div class="overview" style="margin-bottom:12px;">
+        来場者がスマートフォンでスタンプラリーに参加し、選んだ「花」を送信します。送信された花はAPIサーバーに蓄積され、<strong>大阪府ブース内の大型サイネージ</strong>に30秒間隔で反映・アニメーション表示されます。OTOMO側に必要な作業は<strong>「表示用URLをサイネージ端末に設定し、常時表示させること」</strong>のみです。
+      </div>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="flow-node__emoji">📱</span>
+          <div class="flow-node__name">来場者スマホ</div>
+          <div class="flow-node__desc">QRコードで<br>スタンプラリー参加</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <span class="flow-node__emoji">🌐</span>
+          <div class="flow-node__name">APIサーバー</div>
+          <div class="flow-node__desc">花データを蓄積<br>（Render.com）</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node flow-node--otomo">
+          <span class="flow-node__emoji">🖥️</span>
+          <div class="flow-node__name">OTOMOサイネージ</div>
+          <div class="flow-node__desc">URLを表示するだけ<br>30秒ごとに自動更新</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <span class="flow-node__emoji">🌸</span>
+          <div class="flow-node__name">花アニメーション</div>
+          <div class="flow-node__desc">来場者の花が<br>街に咲く演出</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. サイネージ表示仕様 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">2</span>
+        <span class="section__title">サイネージ表示仕様（OTOMO端末への設定値）</span>
+      </div>
+      <table class="spec">
+        <tr>
+          <th>表示URL</th>
+          <td><code>https://hitoshihirai-hub.github.io/hanasaku-signage/display/</code></td>
+        </tr>
+        <tr>
+          <th>推奨ブラウザ</th>
+          <td>Google Chrome 最新版（Chromiumベース可）　※ Internet Explorer 不可</td>
+        </tr>
+        <tr>
+          <th>表示モード</th>
+          <td>全画面（フルスクリーン）固定　― ブラウザのアドレスバーは非表示推奨</td>
+        </tr>
+        <tr>
+          <th>対応解像度</th>
+          <td>1920×1080（FHD）推奨　/ 縦横比16:9 を基本設計。他解像度でも動作します</td>
+        </tr>
+        <tr>
+          <th>通信要件</th>
+          <td><span class="tag tag--req">必須</span>インターネット接続（外部APIへのHTTPS通信）<br>
+              ドメイン <code>github.io</code> および <code>onrender.com</code> へのアクセスを許可してください</td>
+        </tr>
+        <tr>
+          <th>更新方式</th>
+          <td>30秒ごとにAPIをポーリング（自動）。WebSocket・特別な設定は不要</td>
+        </tr>
+        <tr>
+          <th>操作</th>
+          <td>表示後は操作不要。ページ更新・再起動時も同URLで自動復帰</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- 3. 確認チェックリスト -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">3</span>
+        <span class="section__title">OTOMO事業者様への確認事項</span>
+      </div>
+      <ul class="checklist">
+        <li>
+          <div class="check-box"></div>
+          <div class="check-label">
+            <strong>ブラウザ種別・バージョン</strong>の確認
+            <span class="note">OTOMOのサイネージ端末に搭載されているブラウザをお教えください。Chrome以外の場合は動作テストが必要です。</span>
+          </div>
+        </li>
+        <li>
+          <div class="check-box"></div>
+          <div class="check-label">
+            <strong>インターネット接続</strong>の確認
+            <span class="note">会場ネットワークから <code>github.io</code>・<code>onrender.com</code> へのHTTPS通信が可能か確認をお願いします。ファイアウォール制限がある場合は事前にご共有ください。</span>
+          </div>
+        </li>
+        <li>
+          <div class="check-box"></div>
+          <div class="check-label">
+            <strong>URLの入力方式</strong>の確認
+            <span class="note">OTOMOシステムでURLを直接指定できるか、または別の方法（コンテンツ管理画面など）でWebページを表示する方式かを確認させてください。</span>
+          </div>
+        </li>
+        <li>
+          <div class="check-box"></div>
+          <div class="check-label">
+            <strong>表示タイミング・スケジュール</strong>の設定
+            <span class="note">開場中は常時表示。開場前・閉場後の扱い（ブラック画面、別コンテンツ等）についてご確認ください。</span>
+          </div>
+        </li>
+        <li>
+          <div class="check-box"></div>
+          <div class="check-label">
+            <strong>事前動作テストの日程</strong>調整
+            <span class="note">本番前に実機での表示確認を実施したいと考えています。テスト可能な日程をご調整ください。</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 4. 注意事項 -->
+    <div class="section">
+      <div class="section__head">
+        <span class="section__num">4</span>
+        <span class="section__title">現時点の制約事項（本番前に対応予定）</span>
+      </div>
+      <table class="spec">
+        <tr>
+          <th><span class="tag tag--warn">確認中</span>APIサーバー</th>
+          <td>現在は無料プラン（Render.com）を使用。15分間アクセスがないとスリープします。本番用のサーバーは別途選定予定です。</td>
+        </tr>
+        <tr>
+          <th><span class="tag tag--warn">確認中</span>花の最大表示数</th>
+          <td>現在600件で設定。会期全体の来場者数に応じて調整します。</td>
+        </tr>
+      </table>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- フッター -->
+  <div class="footer">
+    <span>GREEN×EXPO 2027 大阪府ブース ― システム連携確認資料</span>
+    <span>お問い合わせ：大阪府 担当者</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
