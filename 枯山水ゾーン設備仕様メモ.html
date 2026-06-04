@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>枯山水ゾーン 設備仕様メモ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    font-size: 10pt;
+    line-height: 1.8;
+    color: #2C1A0A;
+    background: #E0D4C4;
+  }
+
+  @page { size: A4; margin: 14mm 0; }
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0 auto; border-radius: 0; }
+    .no-print { display: none; }
+    table, .box, .callout, .diagram { page-break-inside: avoid; }
+  }
+
+  .page {
+    max-width: 820px;
+    margin: 24px auto;
+    background: #FDFAF5;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    padding: 48px 56px 56px;
+  }
+
+  /* ── ヘッダ ─────────────────────── */
+  .doc-header {
+    border-bottom: 3px solid #6B6048;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+  }
+  .doc-header__label {
+    font-size: 8.5pt;
+    letter-spacing: 0.18em;
+    color: #8C7A4E;
+    font-weight: 700;
+  }
+  .doc-header__title {
+    font-family: "Noto Serif JP", serif;
+    font-size: 19pt;
+    font-weight: 700;
+    color: #4A3A1E;
+    line-height: 1.35;
+    margin: 6px 0 2px;
+  }
+  .doc-header__sub { font-size: 10pt; color: #6B5A3E; }
+  .doc-meta {
+    display: flex; gap: 28px;
+    font-size: 8.5pt; color: #8C7A5E;
+    margin: 12px 0 26px; padding: 8px 0;
+    border-bottom: 1px solid #DDD;
+  }
+
+  /* ── 見出し ──────────────────────── */
+  h2 {
+    font-size: 12.5pt;
+    color: #5A4A2A;
+    border-left: 6px solid #9C8A4A;
+    padding: 3px 0 3px 12px;
+    margin: 26px 0 12px;
+    background: linear-gradient(90deg, #F2ECD9 0%, transparent 100%);
+  }
+  p { margin: 6px 0; }
+  ul { margin: 6px 0 10px 22px; }
+  li { margin: 3px 0; }
+
+  /* ── 課題ボックス ───────────────── */
+  .intro {
+    background: #F4EFE2;
+    border: 1.5px solid #CFC2A0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-size: 9.6pt;
+    line-height: 1.85;
+  }
+  .intro strong { color: #5A4A2A; }
+
+  /* ── 断面図 ──────────────────────── */
+  .diagram {
+    background: #fff;
+    border: 1.5px solid #CFC2A0;
+    border-radius: 10px;
+    padding: 16px 16px 10px;
+    margin: 12px 0;
+    text-align: center;
+  }
+  .diagram svg { width: 100%; height: auto; max-width: 700px; }
+  .diagram__cap { font-size: 8.5pt; color: #8C7A5E; margin-top: 6px; }
+
+  /* ── テーブル ────────────────────── */
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 9pt; margin: 10px 0 14px;
+  }
+  th {
+    background: #6B6048; color: #fff;
+    text-align: left; padding: 6px 10px;
+    border: 1px solid #574E3A; font-weight: 700;
+  }
+  td {
+    padding: 6px 10px; border: 1px solid #D0C6AC;
+    vertical-align: top; line-height: 1.6;
+  }
+  tr:nth-child(even) td { background: #F7F2E6; }
+  td.k { background: #F0E9D6; font-weight: 700; color: #5A4A2A; white-space: nowrap; width: 26%; }
+  td strong { color: #3A2E14; }
+
+  /* ── 注意ボックス ───────────────── */
+  .callout {
+    border-left: 4px solid;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 16px;
+    margin: 12px 0;
+    font-size: 9.4pt;
+    line-height: 1.75;
+  }
+  .callout--note { background: #EFF4E5; border-color: #6B8C3A; }
+  .callout--check { background: #FFF6E5; border-color: #C99A30; }
+  .callout strong { color: #3A2E14; }
+  .callout__title { font-weight: 700; display: block; margin-bottom: 2px; }
+
+  .footer-note {
+    margin-top: 32px; padding-top: 12px;
+    border-top: 1px solid #D0C6AC;
+    font-size: 8.5pt; color: #9B8A6A; text-align: center;
+  }
+
+  .print-btn {
+    display: block; width: 820px; max-width: 100%;
+    margin: 0 auto 8px; text-align: center;
+    padding: 9px; font-size: 13px;
+    background: #6B6048; color: #fff;
+    border: none; cursor: pointer; border-radius: 4px;
+  }
+  .print-btn:hover { background: #837750; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+
+<div class="page">
+
+  <div class="doc-header">
+    <div class="doc-header__label">設備仕様メモ ― FACILITY SPEC</div>
+    <div class="doc-header__title">枯山水ゾーン 設備仕様メモ<br>― 砂の飛散・安全対策 ―</div>
+    <div class="doc-header__sub">「描いてみよう！枯山水にチャレンジ！」体験エリア（無人運営）</div>
+  </div>
+  <div class="doc-meta">
+    <span><strong>版数：</strong>Ver. 1.0</span>
+    <span><strong>作成：</strong>2026年6月</span>
+    <span><strong>対象：</strong>GREEN×EXPO 2027 大阪府ブース</span>
+  </div>
+
+  <!-- 課題と方針 -->
+  <h2>1. 課題と解決方針</h2>
+  <p class="intro">
+    <strong>課題：</strong>無人運営のため、子ども等が白砂を園路にまき散らす／道具が他の人に当たる懸念がある。<br>
+    <strong>方針：</strong>① 利用エリアを物理的に限定し、② 周囲を中央へ向かう<strong>すり鉢状の緩傾斜</strong>にして砂を自然に中央へ戻す。③ 周囲は<strong>現在の3分白砂を固化（樹脂舗装）</strong>して意匠を一体化しつつ崩れを防止。④ 道具を使わず<strong>指で砂紋を描く</strong>運用とし、熊手による事故・持ち去りをゼロにする。
+  </p>
+
+  <!-- 断面図 -->
+  <h2>2. 断面イメージ（すり鉢状の封じ込め）</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- 空 -->
+      <rect x="0" y="0" width="720" height="300" fill="#FDFAF5"/>
+
+      <!-- 地盤（園路下地） -->
+      <path d="M0,150 L120,150 L150,150
+               L300,225 L430,225 L580,150
+               L600,150 L720,150 L720,300 L0,300 Z"
+            fill="#E8DCC2" stroke="none"/>
+
+      <!-- 固化白砂（傾斜部・左右） -->
+      <path d="M150,150 L300,225 L300,212 L162,143 Z" fill="#E4DCC8" stroke="#C9Bd9c" stroke-width="1"/>
+      <path d="M150,150 L300,225 L430,225 L580,150 L568,143 L430,212 L300,212 L162,143 Z"
+            fill="#EAE3D2" stroke="#C9Bd9c" stroke-width="1"/>
+
+      <!-- 固化傾斜の表層（粒テクスチャ風） -->
+      <path d="M150,150 L300,213 L430,213 L580,150"
+            fill="none" stroke="#B7A982" stroke-width="2"/>
+
+      <!-- 中央ばら砂 -->
+      <path d="M300,213 L430,213 L430,225 L300,225 Z" fill="#F2ECDC"/>
+      <path d="M300,213 L430,213" stroke="#9C8E6A" stroke-width="2"/>
+      <!-- 砂紋ライン -->
+      <path d="M308,219 q12,-4 24,0 t24,0 t24,0 t24,0" fill="none" stroke="#C7B98E" stroke-width="1.5"/>
+
+      <!-- 見切り材（縁・左右） -->
+      <rect x="132" y="135" width="20" height="22" rx="2" fill="#7A6A4A"/>
+      <rect x="568" y="135" width="20" height="22" rx="2" fill="#7A6A4A"/>
+
+      <!-- 園路（左右） -->
+      <rect x="0" y="143" width="132" height="9" fill="#D8CCB4"/>
+      <rect x="588" y="143" width="132" height="9" fill="#D8CCB4"/>
+
+      <!-- 指で描く手のアイコン -->
+      <text x="365" y="200" font-size="20" text-anchor="middle">👆</text>
+
+      <!-- 勾配矢印 -->
+      <path d="M200,165 L250,185" stroke="#6B8C3A" stroke-width="2" marker-end="url(#arr)"/>
+      <path d="M520,165 L470,185" stroke="#6B8C3A" stroke-width="2" marker-end="url(#arr)"/>
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#6B8C3A"/>
+        </marker>
+      </defs>
+
+      <!-- ラベル -->
+      <g font-size="11" fill="#5A4A2A">
+        <text x="40" y="130">園路</text>
+        <text x="640" y="130">園路</text>
+        <text x="120" y="120" text-anchor="middle">見切り材</text>
+        <text x="120" y="133" text-anchor="middle" font-size="9" fill="#8C7A5E">（結界・縁）</text>
+        <text x="215" y="120" text-anchor="middle" fill="#3A6B1E">固化した白砂</text>
+        <text x="215" y="133" text-anchor="middle" font-size="9" fill="#6B8C3A">（傾斜・崩れない）</text>
+        <text x="365" y="252" text-anchor="middle" fill="#7A5A2A">中央＝ばら砂（指で描画）</text>
+        <text x="365" y="266" text-anchor="middle" font-size="9" fill="#8C7A5E">厚さ 2〜3cm</text>
+        <text x="505" y="120" text-anchor="middle" fill="#3A6B1E">固化した白砂</text>
+        <text x="290" y="178" font-size="9" fill="#6B8C3A">中央へ 5〜10% 勾配</text>
+      </g>
+    </svg>
+    <div class="diagram__cap">▲ 周囲を中央へ下げ、こぼれた砂が重力で描画エリアへ戻る構造。周囲は同じ白砂を固化し意匠を一体化。</div>
+  </div>
+
+  <!-- 仕様 -->
+  <h2>3. 各部仕様</h2>
+  <table>
+    <tr><th style="width:26%">部位</th><th>仕様</th></tr>
+    <tr><td class="k">中央：描画エリア</td><td>現状の<strong>3分白砂をばら（緩い）状態</strong>で敷設。<strong>敷き厚 2〜3cm</strong>（砂紋がきれいに出る厚み）。利用範囲を限定し、人が砂に届く面積を絞る。</td></tr>
+    <tr><td class="k">周囲：傾斜部</td><td><strong>同じ3分白砂を樹脂舗装で固化</strong>。中央へ向かって<strong>5〜10%の緩勾配</strong>（すり鉢状）。乗っても崩れず、砂も載らない。色・素材が揃い境目が自然。</td></tr>
+    <tr><td class="k">外周：見切り材</td><td>縁石・木縁等で<strong>結界（ふち立ち上げ）</strong>。砂を園路側へ出さない。わずかなリップ形状で逆流防止。</td></tr>
+    <tr><td class="k">砂返し（任意）</td><td>見切り内側に<strong>浅い砂返し溝 or 目皿（グレーチング）</strong>を設け、傾斜を越えた砂を回収。</td></tr>
+    <tr><td class="k">描画方法</td><td><strong>指でなぞる（道具レス）</strong>。熊手の事故・持ち去りゼロ。サインに「指で自由に描いてね」と明示。</td></tr>
+    <tr><td class="k">リセット</td><td>来場者が手でならす＋<strong>巡回時に整える</strong>。必要なら固定式ならし板1枚をワイヤー係留。</td></tr>
+  </table>
+
+  <!-- 固化技術 -->
+  <h2>4. 周囲の「白砂固化」について</h2>
+  <p>現在の3分白砂をそのまま固められるため、意匠が一体に見えます。造園・舗装業者へ以下で相談します。</p>
+  <table>
+    <tr><th style="width:30%">工法</th><th>特徴</th><th style="width:16%">適性</th></tr>
+    <tr><td><strong>樹脂舗装（レジンボンド）</strong></td><td>透明樹脂で白砂を結合。固いが透水性あり、雨でも流れない。耐久性が高い。</td><td>屋外・本命</td></tr>
+    <tr><td>固まる土／固まる砂系</td><td>水で固化。施工が比較的容易。コスト抑えめ。</td><td>屋内外</td></tr>
+  </table>
+  <div class="callout callout--note">
+    <span class="callout__title">📌 業者への依頼ポイント</span>
+    「<strong>手持ちの3分白砂を使った樹脂舗装で、中央だけばら砂を残し、周囲を中央へ向け緩傾斜に固化</strong>」と伝えると意図が正確に伝わります。
+  </div>
+
+  <!-- 確認事項 -->
+  <h2>5. 着工前の確認事項</h2>
+  <div class="callout callout--check">
+    <span class="callout__title">⚠ サンプルで事前確認を推奨</span>
+    <ul style="margin:4px 0 0 18px;">
+      <li><strong>粒度：</strong>3分はやや粗く、指で描くと線が太め・ザラつく。繊細な砂紋を出したい場合は<strong>中央のばら砂のみ2分程度に細粒化</strong>（周囲固化は3分のまま意匠統一）。指描きの感触を試作で確認。</li>
+      <li><strong>勾配：</strong>急すぎるとばら砂が流れ落ち、緩すぎると戻りが弱い。5〜10%で現物調整。</li>
+      <li><strong>衛生：</strong>洗浄済み・微粉（0分）を除いた粒度の白砂を選び、屋内なら粉塵を抑える。</li>
+    </ul>
+  </div>
+
+  <div class="footer-note">
+    GREEN×EXPO 2027 大阪府ブース ― 枯山水ゾーン 設備仕様メモ Ver.1.0
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
