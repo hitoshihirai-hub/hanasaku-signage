@@ -149,3 +149,60 @@ html, body {
   z-index: 100;
 }
 .debug__hint { opacity: 0.7; margin-top: 6px; }
+
+/* ─── 診断オーバーレイ（7/23 STB実機テスト用） ────────────────────
+   STB にはキーボードが無いので操作不要で常時表示する。
+   離れた 43インチ画面を撮影して読み取れることが最優先のため、
+   高コントラスト・等幅・大きめの字にしてある。
+   本番の素の URL では表示されない（config.js の diag が false）。 */
+.diag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 14px 18px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-family: "Consolas", "Courier New", monospace;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  z-index: 200;
+  max-width: 62%;
+}
+.diag__title {
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  color: #7FE0A0;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+.diag__grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 14px;
+  align-items: baseline;
+}
+.diag__k {
+  font-size: 15px;
+  color: #9BD8F0;
+  white-space: nowrap;
+}
+.diag__v {
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+}
+/* 遠くからでも読める主要値。「経過」が 0 に戻れば完全リロードの証拠 */
+.diag__v--big {
+  font-size: 30px;
+  font-weight: bold;
+  line-height: 1.15;
+  color: #FFE08A;
+}
+/* UserAgent は長いので小さく折り返す */
+.diag__v--ua {
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.9;
+}

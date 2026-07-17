@@ -62,6 +62,10 @@ window.Bloom = (function () {
         inner.style.opacity = "1";
 
         // 少し間を置いてゆらぎ開始
+        // NOTE: sway は着地後ずっと動き続けるため、花数ぶんの CSS アニメが
+        //       常時 GPU を焼く。非力な STB では落下より重い可能性がある。
+        //       ?sway=0 で切り分けられるようにしてある。
+        if (!(window.DISPLAY_CONFIG || {}).sway) return;
         setTimeout(() => {
           if (!inner.isConnected) return;
           inner.classList.add("sway");
@@ -87,10 +91,20 @@ window.Bloom = (function () {
   function bloomNew(flowers) {
     const r = root();
     if (!r) return;
+
+    // 1輪ごとの遅延。固定値（0.12秒）だと花数に比例してショーが伸び、
+    // 600輪で72秒、2000輪なら4分かかってスロットに収まらなくなる。
+    // showDurationMs 以内に降り終えるよう、花数で正規化して頭打ちにする。
+    const cfg     = window.DISPLAY_CONFIG || {};
+    const showSec = (cfg.showDurationMs || 60000) / 1000;
+    const stagger = flowers.length > 1
+      ? Math.min(0.12, showSec / flowers.length)
+      : 0;
+
     flowers.forEach((f, i) => {
       const outer = Scene.createFlowerNode(f);
       const g     = outer._animated;
-      const delay = i * 0.12 + Math.random() * 0.5;   // 花ごとに少しずつずらす
+      const delay = i * stagger + Math.random() * 0.5;
       r.appendChild(outer);
       animateFall(outer, g, delay);
     });

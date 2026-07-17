@@ -10,6 +10,8 @@
     isFirstLoad: true,
     lastPollAt: null,
     timer: null,
+    loadedAt: Date.now(),   // 診断オーバーレイの「経過」「読込」用
+    pollCount: 0,
   };
 
   // ---- カウンタ更新 ----
@@ -37,6 +39,84 @@
     document.getElementById("debug-since").textContent = String(state.sinceId);
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // 診断オーバーレイ（7/23 STB実機テスト用）
+  //
+  // STB にはキーボードが無く D キーを押せないため、操作不要で常時表示し、
+  // 画面を撮影するだけで全項目が記録に残るようにする。
+  // ══════════════════════════════════════════════════════════════
+
+  function setText(id, v) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v;
+  }
+
+  function hhmmss(d) {
+    const p = n => String(n).padStart(2, "0");
+    return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  }
+
+  function flowerCount() {
+    const r = document.getElementById("flowers-root");
+    return r ? r.children.length : 0;
+  }
+
+  function startDiag() {
+    if (!cfg.diag) return;
+    const panel = document.getElementById("diag");
+    if (!panel) return;
+    panel.hidden = false;
+
+    // 起動時に一度だけ確定する項目
+    setText("diag-loaded", hhmmss(new Date(state.loadedAt)));
+    setText("diag-ua", navigator.userAgent);
+    setText("diag-cfg",
+      `${cfg.source} / style=${cfg.style} / sway=${cfg.sway ? "on" : "off"}` +
+      ` / fx=${cfg.bgEffects ? "on" : "off"} / n=${cfg.seedCount} / max=${cfg.maxFlowers}`);
+
+    const scr = () => {
+      setText("diag-screen",
+        `viewport ${window.innerWidth}x${window.innerHeight}` +
+        ` / screen ${screen.width}x${screen.height}` +
+        ` / dpr ${window.devicePixelRatio}`);
+    };
+    scr();
+    window.addEventListener("resize", scr);
+
+    // FPS：直近1秒の描画フレーム数
+    let frames = 0;
+    let fpsWindowStart = performance.now();
+    (function tick(ts) {
+      frames++;
+      if (ts - fpsWindowStart >= 1000) {
+        setText("diag-fps", String(Math.round(frames * 1000 / (ts - fpsWindowStart))));
+        frames = 0;
+        fpsWindowStart = ts;
+      }
+      requestAnimationFrame(tick);
+    })(performance.now());
+
+    // 経過秒数・時刻・花数（0.1秒ごと）
+    // 「経過」が 0 に戻れば STB が完全リロードした決定的な証拠になり、
+    // その周期も画面を見ているだけで実測できる。
+    setInterval(() => {
+      setText("diag-elapsed", ((Date.now() - state.loadedAt) / 1000).toFixed(1) + "s");
+      setText("diag-clock", hhmmss(new Date()));
+      setText("diag-count", String(flowerCount()));
+    }, 100);
+  }
+
+  /** ?fx=0 のとき、背景の feTurbulence フィルタを全部外す。
+      feTurbulence はピクセル単位でノイズを生成する重いフィルタで、
+      全画面 1080x1920 ＋ 8 箇所に掛かっている。非力な STB では花より
+      背景のほうが致命的な可能性があるため、切り分けられるようにする。 */
+  function applyBgEffects() {
+    if (cfg.bgEffects) return;
+    document.querySelectorAll(".scene [filter]").forEach(el => {
+      el.removeAttribute("filter");
+    });
+  }
+
   // ---- 1回分のポーリング ----
   async function pollOnce() {
     try {
@@ -57,6 +137,8 @@
       state.sinceId    = data.latestId || state.sinceId;
       state.isFirstLoad = false;
       state.lastPollAt = Date.now();
+      state.pollCount++;
+      setText("diag-poll", String(state.pollCount));
     } catch (err) {
       // エラー時はサイレント。次回ポーリングまで待つ。
       console.warn("[display] poll failed:", err);
@@ -99,9 +181,12 @@
 
   // ---- 起動 ----
   function start() {
-    // ダミー: 初期に少量の花を仕込んでおく
+    applyBgEffects();
+    startDiag();
+
+    // ダミー: 初期に花を仕込んでおく（?n= で数を変えて FPS 上限を実測する）
     if (cfg.source === "dummy") {
-      FlowerAPI._dummy.seed(18);
+      FlowerAPI._dummy.seed(cfg.seedCount);
     }
 
     pollOnce();

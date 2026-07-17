@@ -205,12 +205,54 @@
       </div>
     </header>
 
-    <!-- デバッグ表示（既定でオフ） -->
+    <!-- デバッグ表示（既定でオフ。D キーで切替） -->
     <div class="debug" id="debug-panel" hidden>
       <div>DEBUG <span id="debug-mode"></span></div>
       <div>last poll: <span id="debug-last"></span></div>
       <div>since id: <span id="debug-since"></span></div>
       <div class="debug__hint">F=花追加 / R=リセット / D=このパネル切替</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         診断オーバーレイ（7/23 STB実機テスト用）
+
+         OTOMO の STB にはキーボードが無く、D キーでデバッグパネルを
+         開けない。テスト用クエリ（?demo=1 等）が付いていれば操作不要で
+         常時表示し、画面を撮影するだけで全項目が記録に残るようにする。
+
+         「経過」は読み込みからの秒数。0 に戻れば STB が完全リロードした
+         決定的な証拠になり、その周期も実測できる。
+    ═══════════════════════════════════════════════════════════ -->
+    <div class="diag" id="diag" hidden>
+      <div class="diag__title">DIAG — STB TEST</div>
+      <div class="diag__grid">
+        <span class="diag__k">経過</span>
+        <span class="diag__v diag__v--big" id="diag-elapsed">0.0s</span>
+
+        <span class="diag__k">FPS</span>
+        <span class="diag__v diag__v--big" id="diag-fps">--</span>
+
+        <span class="diag__k">花数</span>
+        <span class="diag__v diag__v--big" id="diag-count">0</span>
+
+        <span class="diag__k">時刻</span>
+        <span class="diag__v" id="diag-clock">--:--:--</span>
+
+        <span class="diag__k">読込</span>
+        <span class="diag__v" id="diag-loaded">--:--:--</span>
+
+        <span class="diag__k">設定</span>
+        <span class="diag__v" id="diag-cfg">-</span>
+
+        <span class="diag__k">画面</span>
+        <span class="diag__v" id="diag-screen">-</span>
+
+        <span class="diag__k">poll</span>
+        <span class="diag__v" id="diag-poll">0</span>
+
+        <span class="diag__k">UA</span>
+        <span class="diag__v diag__v--ua" id="diag-ua">-</span>
+      </div>
     </div>
   </div>
 

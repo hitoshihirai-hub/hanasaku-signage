@@ -46,14 +46,113 @@ window.Scene = (function () {
 
   function clearOccupied() { occupied.length = 0; }
 
-  // 色ごとの補助色（線・影）。花びら本体は SVG グラデーション url(#fg-<key>) を使う
+  // 色ごとの補助色（線・影）。
+  // rich: 花びら本体は SVG グラデーション url(#fg-<key>)
+  // flat: petal のフラット塗り（mobile/js/flower.js と同じ値）
   const COLOR_MAP = {
-    pink:   { petalDark: "#B85C7E", center: "#FFE9A8", centerDark: "#C28F2D" },
-    yellow: { petalDark: "#C68A1A", center: "#FFF5D0", centerDark: "#A05010" },
-    white:  { petalDark: "#B89A60", center: "#F5BE5A", centerDark: "#A56A1E" },
-    purple: { petalDark: "#7B519C", center: "#FFE5A8", centerDark: "#C28F2D" },
-    red:    { petalDark: "#A0382C", center: "#FFD78A", centerDark: "#A56A1E" },
+    pink:   { petal: "#F4A6B8", petalDark: "#B85C7E", center: "#FFE9A8", centerDark: "#C28F2D" },
+    yellow: { petal: "#FAD16A", petalDark: "#C68A1A", center: "#FFF5D0", centerDark: "#A05010" },
+    white:  { petal: "#FFFBEC", petalDark: "#B89A60", center: "#F5BE5A", centerDark: "#A56A1E" },
+    purple: { petal: "#C9A6E0", petalDark: "#7B519C", center: "#FFE5A8", centerDark: "#C28F2D" },
+    red:    { petal: "#EE7A6A", petalDark: "#A0382C", center: "#FFD78A", centerDark: "#A56A1E" },
   };
+
+  const KINDS = ["a", "b", "c"];
+
+  // ────── flat モード ────────────────────────────────────────────────
+  /* 7/23 STB テストで rich と比較するための簡素描画。
+     rich は 1輪あたり 7〜19 要素＋グラデーションを使い、600輪で約9,000要素に
+     なる。43インチを離れて見る用途では、その繊細さは視認されない。
+     flat は 3種×5色＝15個のシンボルを defs に一度だけ定義し、
+     各花は <use> 1個で実体化する（1輪＝outer g + inner g + use の3ノード）。
+     グラデーション・stroke・おしべ等の内部ディテールは持たない。 */
+
+  let flatDefsBuilt = false;
+
+  /** defs に flat 用シンボル（3種×5色）を一度だけ構築する */
+  function buildFlatDefs() {
+    if (flatDefsBuilt) return;
+    const SVG = "http://www.w3.org/2000/svg";
+    const defs = document.querySelector("#flowers-layer defs");
+    if (!defs) return;
+
+    KINDS.forEach(kind => {
+      Object.keys(COLOR_MAP).forEach(colorKey => {
+        const c = COLOR_MAP[colorKey];
+        const sym = document.createElementNS(SVG, "g");
+        sym.setAttribute("id", `ff-${kind}-${colorKey}`);
+
+        // 茎（固定形状。flat では個体差を持たない）
+        const stem = document.createElementNS(SVG, "path");
+        stem.setAttribute("d", "M0,30 q0,38 0,76");
+        stem.setAttribute("stroke", "#5C8A3A");
+        stem.setAttribute("stroke-width", "7");
+        stem.setAttribute("stroke-linecap", "round");
+        stem.setAttribute("fill", "none");
+        sym.appendChild(stem);
+
+        // 葉（固定）
+        const leaf = document.createElementNS(SVG, "path");
+        leaf.setAttribute("d", "M0,56 q22,-4 34,16 q-10,10 -34,-16 Z");
+        leaf.setAttribute("fill", "#7FA84A");
+        sym.appendChild(leaf);
+
+        sym.appendChild(createFlatHead(SVG, kind, c));
+        defs.appendChild(sym);
+      });
+    });
+    flatDefsBuilt = true;
+  }
+
+  /** flat の花頭部：フラット塗りのみ。stroke・内部ディテールなし */
+  function createFlatHead(SVG, kind, c) {
+    const head = document.createElementNS(SVG, "g");
+
+    if (kind === "a") {
+      const PD = "M0,4 C-7,0 -11,-20 -6,-42 Q0,-55 6,-42 C11,-20 7,0 0,4";
+      for (let i = 0; i < 8; i++) {
+        const p = document.createElementNS(SVG, "path");
+        p.setAttribute("d", PD);
+        p.setAttribute("fill", c.petal);
+        p.setAttribute("transform", `rotate(${i * 45})`);
+        head.appendChild(p);
+      }
+      const ctr = document.createElementNS(SVG, "circle");
+      ctr.setAttribute("r", "14");
+      ctr.setAttribute("fill", c.center);
+      head.appendChild(ctr);
+
+    } else if (kind === "b") {
+      [-1, 1].forEach(s => {
+        const p = document.createElementNS(SVG, "path");
+        p.setAttribute("d",
+          `M0,8 q${s * 28},-12 ${s * 30},-44 q${-s * 16},-14 ${-s * 30},10 Z`);
+        p.setAttribute("fill", c.petalDark);
+        head.appendChild(p);
+      });
+      const front = document.createElementNS(SVG, "path");
+      front.setAttribute("d", "M0,18 q-22,-14 -16,-44 q16,-22 32,0 q6,30 -16,44 Z");
+      front.setAttribute("fill", c.petal);
+      head.appendChild(front);
+
+    } else {
+      const SD =
+        "M0,4 C-12,-2 -24,-26 -20,-46 C-17,-55 -10,-62 -5,-57 " +
+        "L0,-51 L5,-57 C10,-62 17,-55 20,-46 C24,-26 12,-2 0,4 Z";
+      for (let i = 0; i < 5; i++) {
+        const p = document.createElementNS(SVG, "path");
+        p.setAttribute("d", SD);
+        p.setAttribute("fill", c.petal);
+        p.setAttribute("transform", `rotate(${i * 72})`);
+        head.appendChild(p);
+      }
+      const ctr = document.createElementNS(SVG, "circle");
+      ctr.setAttribute("r", "10");
+      ctr.setAttribute("fill", c.center);
+      head.appendChild(ctr);
+    }
+    return head;
+  }
 
   /**
    * 1個の花を生成する。
@@ -85,6 +184,21 @@ window.Scene = (function () {
     g.setAttribute("class", "flower");
     g.style.setProperty("--seed-rot", rot + "deg");
     g.setAttribute("data-id", flower.id);
+
+    // flat モード：defs のシンボルを <use> 1個で実体化して終わり
+    if ((window.DISPLAY_CONFIG || {}).style === "flat") {
+      buildFlatDefs();
+      const kindKey = KINDS.includes(flower.kind) ? flower.kind : "a";
+      const ref = `#ff-${kindKey}-${colorKey}`;
+      const use = document.createElementNS(SVG, "use");
+      use.setAttribute("href", ref);
+      // 古いブラウザ向けの保険。STB の搭載ブラウザは 7/23 に判明する
+      use.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", ref);
+      g.appendChild(use);
+      outer.appendChild(g);
+      outer._animated = g;
+      return outer;
+    }
 
     // 茎（緩やかな曲線）
     const stem = document.createElementNS(SVG, "path");
