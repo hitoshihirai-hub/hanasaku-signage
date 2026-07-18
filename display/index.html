@@ -9,58 +9,87 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/display.css?v=3">
+  <link rel="stylesheet" href="css/display.css?v=6">
 </head>
 <body>
   <div class="stage" id="stage">
 
-    <!-- 背景 SVG（Sakana風：ほぼ白の余白＋細い線画の街） -->
+    <!-- 背景 SVG（Sakana風：ほぼ白の余白＋線画の街）
+         屋外サイネージ向けに、線は視認できる濃さ・太さにしている。
+         大阪城・通天閣は「識別マーク」として濃く（花の輪郭と同じ #6E5A46）、
+         一般の街並みは一段淡く（背景として後退させる）。 -->
     <svg class="scene" viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
 
       <!-- ほぼ白の地（わずかに暖色） -->
       <rect x="0" y="0" width="1080" height="1920" fill="#FCFBF7"/>
 
-      <!-- 太陽（細い輪郭のみ・ごく淡く） -->
-      <circle cx="852" cy="308" r="104" fill="none" stroke="#ECE4D2" stroke-width="4"/>
+      <!-- 太陽（細い輪郭のみ） -->
+      <circle cx="866" cy="298" r="96" fill="none" stroke="#E4DAC2" stroke-width="4"/>
 
-      <!-- 一般の街並み（細い線画。塗りなし） -->
-      <g fill="none" stroke="#CDC9BD" stroke-width="3"
-         stroke-linejoin="round" stroke-linecap="round">
-        <path d="M0,1600 L120,1600 L120,1552 L212,1552 L212,1596 L300,1596
-                 L300,1526 L392,1526 L392,1584 L470,1584 L470,1544 L556,1544
-                 L556,1592 L648,1592 L648,1552 L740,1552 L740,1600 L1080,1600"/>
+      <!-- 街並み一式（地平線・一般ビル・大阪城・通天閣）。
+           画面下端近くに配置するためまとめて下へ平行移動する。 -->
+      <g transform="translate(0,198)">
+
+        <!-- 一般の街並み（線画・淡め。中央と両端に控えめに配置し余白を残す） -->
+        <g fill="none" stroke="#B4AA92" stroke-width="3"
+           stroke-linejoin="round" stroke-linecap="round">
+          <path d="M0,1600 L0,1576 L74,1576 L74,1600"/>
+          <path d="M300,1600 L300,1560 L362,1560 L362,1590 L430,1590 L430,1552
+                   L500,1552 L500,1584 L560,1584 L560,1566 L622,1566 L622,1592
+                   L690,1592 L690,1558 L760,1558 L760,1600"/>
+          <path d="M1004,1600 L1004,1572 L1074,1572 L1074,1600"/>
+        </g>
+
+        <!-- ══ 大阪城（線画・忠実デフォルメ：石垣＋反りのある入母屋屋根を段々に） ══ -->
+        <g class="landmark landmark-castle"
+           fill="none" stroke="#6E5A46" stroke-width="3.5"
+           stroke-linejoin="round" stroke-linecap="round">
+          <!-- 石垣（末広がり） -->
+          <path d="M138,1602 L168,1522 L242,1522 L272,1602"/>
+          <!-- 1層目 本体＋反り屋根 -->
+          <rect x="176" y="1498" width="58" height="24"/>
+          <path d="M164,1498 Q205,1478 246,1498"/>
+          <!-- 2層目 -->
+          <rect x="184" y="1476" width="42" height="22"/>
+          <path d="M174,1476 Q205,1459 236,1476"/>
+          <!-- 3層目 -->
+          <rect x="190" y="1456" width="30" height="20"/>
+          <path d="M182,1456 Q205,1442 228,1456"/>
+          <!-- 4層目（最上層） -->
+          <rect x="196" y="1436" width="18" height="20"/>
+          <path d="M189,1436 Q205,1423 221,1436"/>
+          <!-- 金の鯱（最上屋根の両端） -->
+          <path d="M201,1424 q2,-5 0,-9"/>
+          <path d="M209,1424 q-2,-5 0,-9"/>
+        </g>
+
+        <!-- ══ 通天閣（線画・忠実デフォルメ：末広がりの脚＋丸い展望台＋尖塔） ══ -->
+        <g class="landmark landmark-tower"
+           fill="none" stroke="#6E5A46" stroke-width="3.5"
+           stroke-linejoin="round" stroke-linecap="round">
+          <!-- 基部の建物（末広がり） -->
+          <path d="M836,1602 L850,1558 L910,1558 L924,1602"/>
+          <!-- 下段タワー（テーパー）＋横のトラス2本 -->
+          <path d="M850,1558 L868,1474"/>
+          <path d="M910,1558 L892,1474"/>
+          <path d="M858,1528 L902,1528"/>
+          <path d="M863,1500 L897,1500"/>
+          <!-- 主展望台（丸みのある張り出し） -->
+          <path d="M860,1474 L860,1462 Q860,1453 870,1453 L890,1453 Q900,1453 900,1462 L900,1474 Z"/>
+          <!-- 上段タワー（テーパー） -->
+          <path d="M872,1453 L878,1416"/>
+          <path d="M888,1453 L882,1416"/>
+          <!-- 上部展望台 -->
+          <rect x="873" y="1406" width="14" height="10"/>
+          <!-- 尖塔・避雷球・アンテナ -->
+          <rect x="877" y="1382" width="6" height="24"/>
+          <circle cx="880" cy="1378" r="5"/>
+          <path d="M880,1373 L880,1354"/>
+        </g>
+
+        <!-- 地平線（細い1本） -->
+        <line x1="0" y1="1602" x2="1080" y2="1602" stroke="#D6D0C0" stroke-width="2"/>
       </g>
-
-      <!-- 大阪城（線画。下端が街並みベースに揃うよう平行移動） -->
-      <g class="landmark landmark-castle" transform="translate(0,182)"
-         fill="none" stroke="#BDB6A6" stroke-width="3" stroke-linejoin="round">
-        <path d="M130,1420 L165,1330 L235,1330 L270,1420 Z"/>
-        <rect x="170" y="1306" width="60" height="24"/>
-        <path d="M155,1306 L168,1296 L168,1292 L232,1292 L232,1296 L245,1306 Z"/>
-        <rect x="178" y="1276" width="44" height="16"/>
-        <path d="M166,1276 L177,1267 L177,1264 L223,1264 L223,1267 L234,1276 Z"/>
-        <rect x="186" y="1252" width="28" height="12"/>
-        <path d="M177,1252 L185,1244 L185,1241 L215,1241 L215,1244 L223,1252 Z"/>
-        <rect x="192" y="1232" width="16" height="9"/>
-        <path d="M186,1232 L191,1226 L191,1224 L209,1224 L209,1226 L214,1232 Z"/>
-      </g>
-
-      <!-- 通天閣（線画。同上） -->
-      <g class="landmark landmark-tower" transform="translate(0,182)"
-         fill="none" stroke="#BDB6A6" stroke-width="3" stroke-linejoin="round">
-        <rect x="825" y="1360" width="120" height="60"/>
-        <path d="M848,1360 L860,1270 L900,1270 L912,1360 Z"/>
-        <rect x="852" y="1262" width="56" height="10"/>
-        <path d="M866,1262 L872,1210 L888,1210 L894,1262 Z"/>
-        <rect x="854" y="1190" width="52" height="22"/>
-        <path d="M850,1190 L862,1182 L898,1182 L910,1190 Z"/>
-        <rect x="875" y="1158" width="10" height="24"/>
-        <circle cx="880" cy="1155" r="5"/>
-        <rect x="878" y="1130" width="4" height="24"/>
-      </g>
-
-      <!-- 地平線（細い1本） -->
-      <line x1="0" y1="1602" x2="1080" y2="1602" stroke="#E4E0D4" stroke-width="2"/>
     </svg>
 
     <!-- 花レイヤー（SVG。動的に花を追加） -->
@@ -149,10 +178,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=3"></script>
-  <script src="js/api.js?v=3"></script>
-  <script src="js/scene.js?v=3"></script>
-  <script src="js/bloom.js?v=3"></script>
-  <script src="js/main.js?v=3"></script>
+  <script src="config.js?v=6"></script>
+  <script src="js/api.js?v=6"></script>
+  <script src="js/scene.js?v=6"></script>
+  <script src="js/bloom.js?v=6"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

@@ -15,7 +15,9 @@
 */
 window.Scene = (function () {
 
-  const FIELD = { x0: 80, y0: 380, x1: 1000, y1: 1860 };
+  // y1 は花が咲く下限。街並み（地平線 y=1602）を花で埋めないよう、
+  // 手前の帯を空けてランドマークを見せる。
+  const FIELD = { x0: 80, y0: 360, x1: 1000, y1: 1720 };
   const MIN_DIST = 150;
   const MAX_TRIES = 24;
   const occupied = [];

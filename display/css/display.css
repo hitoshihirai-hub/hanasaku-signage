@@ -32,7 +32,7 @@ html, body {
   width:  min(100vw, calc(100vh * 9 / 16));
   height: min(100vh, calc(100vw * 16 / 9));
   transform: translate(-50%, -50%);
-  background: var(--warm-paper);
+  background: #FCFBF7;              /* 背景SVGと同じ白（読み込み前のチラつき防止） */
   box-shadow: 0 0 60px rgba(0,0,0,0.4);
   overflow: hidden;
 }
@@ -47,65 +47,72 @@ html, body {
 }
 .flowers { pointer-events: none; }
 
-/* カウンタ（上部） */
+/* カウンタ（上部）
+   線画・余白基調に合わせた最小限のデザイン。屋外での可読性のため、
+   ・数字は大きく高コントラストのダークインク（白地に濃色＝最も読める）
+   ・囲みは重い塗りカードをやめ、うっすら白＋細いヘアラインのみ
+   ・新規開花時だけ数字がテラコッタ色に弾む（Sakana的な一点差し色） */
 .counter {
   position: absolute;
-  top: 3.2%;
+  top: 3%;
   left: 4%;
   right: 4%;
-  padding: 1.6em 1.4em 1.2em;
-  background: rgba(255, 245, 225, 0.88);
-  border: 2px solid var(--warm-ink-soft);
-  border-radius: 22px;
-  box-shadow: 0 6px 0 rgba(140,106,78,0.18), 0 0 24px rgba(255,200,140,0.35);
+  padding: 1.1em 1.2em 0.95em;
+  background: rgba(255, 255, 255, 0.80);
+  border: 1.5px solid #DAD4C6;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(120,110,90,0.08);
   text-align: center;
   backdrop-filter: blur(2px);
 }
 .counter__title {
-  font-family: "Klee One", "Caveat", sans-serif;
+  font-family: "Klee One", sans-serif;
   font-weight: 600;
-  font-size: clamp(20px, 2.6vw, 44px);
-  color: var(--warm-ink);
-  letter-spacing: 0.04em;
-  margin-bottom: 0.45em;
+  font-size: clamp(20px, 2.7vw, 46px);
+  color: #4A3E2E;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5em;
 }
 .counter__row {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 1.2em;
+  gap: 1.5em;
 }
 .counter__cell {
   display: flex;
   align-items: baseline;
-  gap: 0.25em;
+  gap: 0.28em;
 }
 .counter__label {
+  font-family: "Klee One", sans-serif;
   font-size: clamp(14px, 1.5vw, 24px);
-  color: var(--warm-ink-soft);
-  margin-right: 0.3em;
+  color: #9A8E78;
+  margin-right: 0.2em;
 }
 .counter__num {
-  font-family: "Caveat", "Klee One", sans-serif;
+  font-family: "Klee One", sans-serif;
   font-weight: 700;
-  font-size: clamp(40px, 5.8vw, 96px);
+  font-size: clamp(42px, 6vw, 104px);
   line-height: 1;
-  color: var(--warm-accent);
-  text-shadow: 0 2px 0 rgba(140,106,78,0.18);
+  color: #3E3428;
   min-width: 1.6em;
   text-align: right;
-  transition: transform 0.4s cubic-bezier(.34,1.7,.64,1);
+  transition: transform 0.4s cubic-bezier(.34,1.7,.64,1), color 0.4s ease;
 }
-.counter__num.pop { transform: scale(1.18); }
+.counter__num.pop {
+  transform: scale(1.18);
+  color: #D2694A;               /* 開花時だけ差し色 */
+}
 .counter__unit {
+  font-family: "Klee One", sans-serif;
   font-size: clamp(14px, 1.4vw, 22px);
-  color: var(--warm-ink-soft);
+  color: #9A8E78;
 }
 .counter__divider {
-  width: 2px;
-  height: 2.4em;
-  background: var(--warm-ink-soft);
-  opacity: 0.35;
+  width: 1.5px;
+  height: 2.2em;
+  background: #DAD4C6;
   border-radius: 2px;
 }
 
