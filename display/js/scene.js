@@ -95,24 +95,7 @@ window.Scene = (function () {
         const sym = document.createElementNS(SVG, "g");
         sym.setAttribute("id", `ff-${kind}-${colorKey}`);
 
-        // 茎（固定形状。flat では個体差を持たない）
-        const stem = document.createElementNS(SVG, "path");
-        stem.setAttribute("d", "M0,30 q0,38 0,76");
-        stem.setAttribute("stroke", "#6E5A46");
-        stem.setAttribute("stroke-width", "3");
-        stem.setAttribute("stroke-linecap", "round");
-        stem.setAttribute("fill", "none");
-        sym.appendChild(stem);
-
-        // 葉（固定・線画）
-        const leaf = document.createElementNS(SVG, "path");
-        leaf.setAttribute("d", "M0,56 q22,-4 34,16 q-10,10 -34,-16 Z");
-        leaf.setAttribute("fill", "#EAF0DE");
-        leaf.setAttribute("stroke", "#6E5A46");
-        leaf.setAttribute("stroke-width", "2");
-        leaf.setAttribute("stroke-linejoin", "round");
-        sym.appendChild(leaf);
-
+        // Sakana調の最小化：茎・葉は持たず、花（ブロッサム）だけを描く。
         sym.appendChild(createFlatHead(SVG, kind, c));
         defs.appendChild(sym);
       });
@@ -120,72 +103,52 @@ window.Scene = (function () {
     flatDefsBuilt = true;
   }
 
-  /** flat の花頭部：フラット塗り＋均一な細い輪郭（線画に色を載せた Sakana 調）。
-      ほぼ白の背景で白・黄の花が消えないよう、全色に輪郭を付ける。 */
+  /** flat の花頭部：Sakana調のミニマル線画。
+      1種につき数本の細線＋フラット塗りのみ。茎・葉・おしべ・重なりは持たない。
+      原点を中心に放射配置し、花そのものが点に対して中央に来る（舞う花）。 */
   function createFlatHead(SVG, kind, c) {
     const head = document.createElementNS(SVG, "g");
-    // 均一な細線の輪郭。花芯・花びらで共通に使う
-    const LINE = "#6E5A46";      // 温かみのあるダークブラウン（黒より柔らかい）
+    const LINE = "#6E5A46";   // 均一な細線
     const LW   = "2";
 
-    if (kind === "a") {
-      const PD = "M0,4 C-7,0 -11,-20 -6,-42 Q0,-55 6,-42 C11,-20 7,0 0,4";
-      for (let i = 0; i < 8; i++) {
-        const p = document.createElementNS(SVG, "path");
-        p.setAttribute("d", PD);
-        p.setAttribute("fill", c.petal);
-        p.setAttribute("stroke", LINE);
-        p.setAttribute("stroke-width", LW);
-        p.setAttribute("stroke-linejoin", "round");
-        p.setAttribute("transform", `rotate(${i * 45})`);
-        head.appendChild(p);
-      }
+    const petal = (d, fill, rot) => {
+      const p = document.createElementNS(SVG, "path");
+      p.setAttribute("d", d);
+      p.setAttribute("fill", fill);
+      p.setAttribute("stroke", LINE);
+      p.setAttribute("stroke-width", LW);
+      p.setAttribute("stroke-linejoin", "round");
+      if (rot) p.setAttribute("transform", `rotate(${rot})`);
+      head.appendChild(p);
+    };
+    const dot = (r, fill) => {
       const ctr = document.createElementNS(SVG, "circle");
-      ctr.setAttribute("r", "13");
-      ctr.setAttribute("fill", c.center);
+      ctr.setAttribute("r", String(r));
+      ctr.setAttribute("fill", fill);
       ctr.setAttribute("stroke", LINE);
       ctr.setAttribute("stroke-width", LW);
       head.appendChild(ctr);
+    };
+
+    if (kind === "a") {
+      // コスモス／デイジー：丸い花びら5枚＋芯（シンプルな輪郭）
+      const PD = "M0,-6 C-8,-8 -11,-26 0,-30 C11,-26 8,-8 0,-6 Z";
+      for (let i = 0; i < 5; i++) petal(PD, c.petal, i * 72);
+      dot(6, c.center);
 
     } else if (kind === "b") {
-      [-1, 1].forEach(s => {
-        const p = document.createElementNS(SVG, "path");
-        p.setAttribute("d",
-          `M0,8 q${s * 28},-12 ${s * 30},-44 q${-s * 16},-14 ${-s * 30},10 Z`);
-        p.setAttribute("fill", c.petalDark);
-        p.setAttribute("stroke", LINE);
-        p.setAttribute("stroke-width", LW);
-        p.setAttribute("stroke-linejoin", "round");
-        head.appendChild(p);
-      });
-      const front = document.createElementNS(SVG, "path");
-      front.setAttribute("d", "M0,18 q-22,-14 -16,-44 q16,-22 32,0 q6,30 -16,44 Z");
-      front.setAttribute("fill", c.petal);
-      front.setAttribute("stroke", LINE);
-      front.setAttribute("stroke-width", LW);
-      front.setAttribute("stroke-linejoin", "round");
-      head.appendChild(front);
+      // チューリップ：3つ山の一本輪郭（カップ）だけ
+      petal(
+        "M0,8 C-13,8 -15,-14 -13,-30 C-8,-24 -5,-32 -4,-30 " +
+        "C-2,-24 -1,-32 0,-30 C1,-32 2,-24 4,-30 C5,-32 8,-24 13,-30 " +
+        "C15,-14 13,8 0,8 Z",
+        c.petal, 0);
 
     } else {
-      const SD =
-        "M0,4 C-12,-2 -24,-26 -20,-46 C-17,-55 -10,-62 -5,-57 " +
-        "L0,-51 L5,-57 C10,-62 17,-55 20,-46 C24,-26 12,-2 0,4 Z";
-      for (let i = 0; i < 5; i++) {
-        const p = document.createElementNS(SVG, "path");
-        p.setAttribute("d", SD);
-        p.setAttribute("fill", c.petal);
-        p.setAttribute("stroke", LINE);
-        p.setAttribute("stroke-width", LW);
-        p.setAttribute("stroke-linejoin", "round");
-        p.setAttribute("transform", `rotate(${i * 72})`);
-        head.appendChild(p);
-      }
-      const ctr = document.createElementNS(SVG, "circle");
-      ctr.setAttribute("r", "10");
-      ctr.setAttribute("fill", c.center);
-      ctr.setAttribute("stroke", LINE);
-      ctr.setAttribute("stroke-width", LW);
-      head.appendChild(ctr);
+      // さくら：先端に切れ込みのある花びら5枚＋芯（さくららしさは残す）
+      const SD = "M0,-4 C-8,-6 -12,-24 -6,-30 L0,-25 L6,-30 C12,-24 8,-6 0,-4 Z";
+      for (let i = 0; i < 5; i++) petal(SD, c.petal, i * 72);
+      dot(5, c.center);
     }
     return head;
   }
