@@ -18,9 +18,12 @@ window.DISPLAY_CONFIG = {
   //       開花アニメが誰にも見られない。7/23 のテスト後に確定する。
   initialBloomAsSettled: true,
 
-  // 花の最大表示数（古いものから間引く）。性能保護。
-  // NOTE: 実機での上限は 7/23 の STB テストで実測して確定する。
-  maxFlowers: 600,
+  // 画面に同時に咲かせる最大数。超えたら古い花から静かにフェードアウトする。
+  // NOTE: この値は2つの制約の小さい方で決まる:
+  //   (1) 美観 … Sakana調の余白を保つには少なめが良い（密集するとうっとうしい）
+  //   (2) 性能 … STB が耐える上限。7/23 のテストで実測して確定する。
+  // 既定は美観優先の暫定値。?n= で上書きして性能上限を測る。
+  maxFlowers: 90,
 
   // 開花ショーの目安尺（ミリ秒）。花数によらずこの時間内に降り終える。
   showDurationMs: 60 * 1000,
@@ -30,7 +33,7 @@ window.DISPLAY_CONFIG = {
 
   // ── 以下、7/23 STB実機テスト用の既定値（URLクエリで上書きする） ──
   seedCount: 18,     // dummy モードの初期投入数
-  style:     "rich", // 花の描画: "rich"=グラデ有り / "flat"=フラット塗り
+  style:     "flat", // 花の描画: "flat"=Sakana調の線画＋フラット塗り（既定） / "rich"=旧グラデ
   sway:      true,   // 着地後の永続ゆらぎ
   bgEffects: true,   // 背景の feTurbulence フィルタ
   diag:      false,  // 診断オーバーレイ

@@ -20,20 +20,31 @@ window.Scene = (function () {
   const MAX_TRIES = 24;
   const occupied = [];
 
+  // 占有スロットは push した object をそのまま返す。
+  // 花が消えるとき releasePosition(ref) で同じ参照を外し、場所を再利用可能にする。
   function pickPosition() {
     for (let i = 0; i < MAX_TRIES; i++) {
       const x = FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0);
       const t = Math.pow(Math.random(), 0.7);
       const y = FIELD.y0 + t * (FIELD.y1 - FIELD.y0);
       if (!collides(x, y)) {
-        occupied.push({ x, y });
-        return { x, y };
+        const ref = { x, y };
+        occupied.push(ref);
+        return ref;
       }
     }
-    const x = FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0);
-    const y = FIELD.y0 + Math.random() * (FIELD.y1 - FIELD.y0);
-    occupied.push({ x, y });
-    return { x, y };
+    const ref = {
+      x: FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0),
+      y: FIELD.y0 + Math.random() * (FIELD.y1 - FIELD.y0),
+    };
+    occupied.push(ref);
+    return ref;
+  }
+
+  /** 花が消えたとき、その占有スロットを解放して新しい花が同じ場所を使えるようにする */
+  function releasePosition(ref) {
+    const i = occupied.indexOf(ref);
+    if (i >= 0) occupied.splice(i, 1);
   }
 
   function collides(x, y) {
@@ -85,16 +96,19 @@ window.Scene = (function () {
         // 茎（固定形状。flat では個体差を持たない）
         const stem = document.createElementNS(SVG, "path");
         stem.setAttribute("d", "M0,30 q0,38 0,76");
-        stem.setAttribute("stroke", "#5C8A3A");
-        stem.setAttribute("stroke-width", "7");
+        stem.setAttribute("stroke", "#6E5A46");
+        stem.setAttribute("stroke-width", "3");
         stem.setAttribute("stroke-linecap", "round");
         stem.setAttribute("fill", "none");
         sym.appendChild(stem);
 
-        // 葉（固定）
+        // 葉（固定・線画）
         const leaf = document.createElementNS(SVG, "path");
         leaf.setAttribute("d", "M0,56 q22,-4 34,16 q-10,10 -34,-16 Z");
-        leaf.setAttribute("fill", "#7FA84A");
+        leaf.setAttribute("fill", "#EAF0DE");
+        leaf.setAttribute("stroke", "#6E5A46");
+        leaf.setAttribute("stroke-width", "2");
+        leaf.setAttribute("stroke-linejoin", "round");
         sym.appendChild(leaf);
 
         sym.appendChild(createFlatHead(SVG, kind, c));
@@ -104,9 +118,13 @@ window.Scene = (function () {
     flatDefsBuilt = true;
   }
 
-  /** flat の花頭部：フラット塗りのみ。stroke・内部ディテールなし */
+  /** flat の花頭部：フラット塗り＋均一な細い輪郭（線画に色を載せた Sakana 調）。
+      ほぼ白の背景で白・黄の花が消えないよう、全色に輪郭を付ける。 */
   function createFlatHead(SVG, kind, c) {
     const head = document.createElementNS(SVG, "g");
+    // 均一な細線の輪郭。花芯・花びらで共通に使う
+    const LINE = "#6E5A46";      // 温かみのあるダークブラウン（黒より柔らかい）
+    const LW   = "2";
 
     if (kind === "a") {
       const PD = "M0,4 C-7,0 -11,-20 -6,-42 Q0,-55 6,-42 C11,-20 7,0 0,4";
@@ -114,12 +132,17 @@ window.Scene = (function () {
         const p = document.createElementNS(SVG, "path");
         p.setAttribute("d", PD);
         p.setAttribute("fill", c.petal);
+        p.setAttribute("stroke", LINE);
+        p.setAttribute("stroke-width", LW);
+        p.setAttribute("stroke-linejoin", "round");
         p.setAttribute("transform", `rotate(${i * 45})`);
         head.appendChild(p);
       }
       const ctr = document.createElementNS(SVG, "circle");
-      ctr.setAttribute("r", "14");
+      ctr.setAttribute("r", "13");
       ctr.setAttribute("fill", c.center);
+      ctr.setAttribute("stroke", LINE);
+      ctr.setAttribute("stroke-width", LW);
       head.appendChild(ctr);
 
     } else if (kind === "b") {
@@ -128,11 +151,17 @@ window.Scene = (function () {
         p.setAttribute("d",
           `M0,8 q${s * 28},-12 ${s * 30},-44 q${-s * 16},-14 ${-s * 30},10 Z`);
         p.setAttribute("fill", c.petalDark);
+        p.setAttribute("stroke", LINE);
+        p.setAttribute("stroke-width", LW);
+        p.setAttribute("stroke-linejoin", "round");
         head.appendChild(p);
       });
       const front = document.createElementNS(SVG, "path");
       front.setAttribute("d", "M0,18 q-22,-14 -16,-44 q16,-22 32,0 q6,30 -16,44 Z");
       front.setAttribute("fill", c.petal);
+      front.setAttribute("stroke", LINE);
+      front.setAttribute("stroke-width", LW);
+      front.setAttribute("stroke-linejoin", "round");
       head.appendChild(front);
 
     } else {
@@ -143,12 +172,17 @@ window.Scene = (function () {
         const p = document.createElementNS(SVG, "path");
         p.setAttribute("d", SD);
         p.setAttribute("fill", c.petal);
+        p.setAttribute("stroke", LINE);
+        p.setAttribute("stroke-width", LW);
+        p.setAttribute("stroke-linejoin", "round");
         p.setAttribute("transform", `rotate(${i * 72})`);
         head.appendChild(p);
       }
       const ctr = document.createElementNS(SVG, "circle");
       ctr.setAttribute("r", "10");
       ctr.setAttribute("fill", c.center);
+      ctr.setAttribute("stroke", LINE);
+      ctr.setAttribute("stroke-width", LW);
       head.appendChild(ctr);
     }
     return head;
@@ -178,6 +212,8 @@ window.Scene = (function () {
     outer.dataset.fx = pos.x.toFixed(1);
     outer.dataset.fy = pos.y.toFixed(1);
     outer.dataset.sc = scale.toFixed(3);
+    // 消えるときに座標スロットを解放するための参照
+    outer._occ = pos;
 
     // ── inner g：CSS アニメーション対象（SVG transform は付けない） ─
     const g = document.createElementNS(SVG, "g");
@@ -365,5 +401,5 @@ window.Scene = (function () {
     return head;
   }
 
-  return { createFlowerNode, clearOccupied, FIELD };
+  return { createFlowerNode, clearOccupied, releasePosition, FIELD };
 })();

@@ -122,11 +122,33 @@ window.Bloom = (function () {
     });
   }
 
-  /** 最大数を超えた古い花を先頭から間引き */
+  /** 1輪を静かにフェードアウトさせてから DOM 除去し、座標スロットを解放する。
+      「たまるとうっとうしい」対策。パッと消さず、そっと散らす。 */
+  function fadeOutAndRemove(outer) {
+    if (outer._fading) return;
+    outer._fading = true;
+
+    // 場所は即座に解放し、新しい花がすぐ同じ位置に咲けるようにする
+    if (outer._occ && window.Scene) Scene.releasePosition(outer._occ);
+
+    const inner = outer._animated || outer.querySelector(".flower");
+    if (inner) {
+      inner.style.transition = "opacity 1.4s ease";
+      inner.style.opacity = "0";
+    }
+    setTimeout(() => {
+      if (outer.parentNode) outer.parentNode.removeChild(outer);
+    }, 1500);
+  }
+
+  /** 最大数を超えたぶん、古い花からフェードアウトさせて間引く。
+      フェード中の花は二重に数えない（次回 prune で再指定しない）。 */
   function pruneTo(max) {
     const r = root();
     if (!r) return;
-    while (r.children.length > max) r.removeChild(r.firstChild);
+    const live = Array.prototype.filter.call(r.children, n => !n._fading);
+    const over = live.length - max;
+    for (let i = 0; i < over; i++) fadeOutAndRemove(live[i]);
   }
 
   /** 全花を消去して占有リストもリセット */
