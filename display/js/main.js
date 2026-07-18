@@ -75,8 +75,12 @@
       ` / fx=${cfg.bgEffects ? "on" : "off"} / n=${cfg.seedCount} / max=${cfg.maxFlowers}`);
 
     const scr = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      // OTOMO屋外モデルは縦置き(1080x1920)。STBが横出力だと縦コンテンツが
+      // 横倒しになるため、向きを明示して一目で判別できるようにする。
+      const orient = h >= w ? "縦OK" : "⚠横！";
       setText("diag-screen",
-        `viewport ${window.innerWidth}x${window.innerHeight}` +
+        `${orient}  viewport ${w}x${h}` +
         ` / screen ${screen.width}x${screen.height}` +
         ` / dpr ${window.devicePixelRatio}`);
     };
