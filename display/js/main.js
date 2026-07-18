@@ -110,6 +110,44 @@
     }, 100);
   }
 
+  /** 背景マップ画像（方法B＝淡く敷く）を scene に挿入する。
+      - 読み込み成功 → マップに城/塔が含まれるので自作ランドマークを隠す
+      - 読み込み失敗（未購入でファイル無し等） → 線画のまま（公開URLで安全側）
+      画像は花レイヤーより背面に入るため、花の視認性は保たれる。 */
+  function applyBgImage() {
+    const src = cfg.bgImage;
+    if (!src) return;
+    const scene = document.querySelector("svg.scene");
+    if (!scene) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const img = document.createElementNS(NS, "image");
+    img.setAttribute("href", src);
+    img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", src);
+    img.setAttribute("x", "0");
+    img.setAttribute("y", "0");
+    img.setAttribute("width", "1080");
+    img.setAttribute("height", "1920");
+    // 右側を見せる（xMax）＋はみ出しは slice で切る＝カバー表示
+    img.setAttribute("preserveAspectRatio", (cfg.bgAlign || "xMaxYMid") + " slice");
+    img.setAttribute("opacity", String(cfg.bgOpacity != null ? cfg.bgOpacity : 0.3));
+
+    img.addEventListener("load", () => {
+      // マップにはランドマーク・街並みが含まれるので、白背景と画像以外の
+      // 線画背景（太陽・街並み・城・塔・地平線）を全部隠す。
+      Array.prototype.forEach.call(scene.children, el => {
+        if (el === img) return;
+        if (el.tagName && el.tagName.toLowerCase() === "rect") return; // 白背景は残す
+        el.style.display = "none";
+      });
+    });
+    // 失敗時は何もしない（線画背景が残る＝公開URLで安全側）
+
+    // 白背景 rect の直後（線画より背面）に挿入
+    const rect = scene.querySelector("rect");
+    if (rect && rect.nextSibling) scene.insertBefore(img, rect.nextSibling);
+    else scene.appendChild(img);
+  }
+
   /** ?fx=0 のとき、背景の feTurbulence フィルタを全部外す。
       feTurbulence はピクセル単位でノイズを生成する重いフィルタで、
       全画面 1080x1920 ＋ 8 箇所に掛かっている。非力な STB では花より
@@ -185,6 +223,7 @@
 
   // ---- 起動 ----
   function start() {
+    applyBgImage();
     applyBgEffects();
     startDiag();
 
