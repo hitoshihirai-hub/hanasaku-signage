@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/display.css?v=7">
+  <link rel="stylesheet" href="css/display.css?v=8">
 </head>
 <body>
   <div class="stage" id="stage">
@@ -63,28 +63,45 @@
           <path d="M209,1424 q-2,-5 0,-9"/>
         </g>
 
-        <!-- ══ 通天閣（線画・忠実デフォルメ：末広がりの脚＋丸い展望台＋尖塔） ══ -->
+        <!-- ══ 通天閣（線画・忠実デフォルメ：シルエット参考）
+             エッフェル塔型の開脚アーチ＋X字トラス＋主展望台＋王冠(ランタン)＋尖塔 ══ -->
         <g class="landmark landmark-tower"
            fill="none" stroke="#6E5A46" stroke-width="3.5"
            stroke-linejoin="round" stroke-linecap="round">
-          <!-- 基部の建物（末広がり） -->
-          <path d="M836,1602 L850,1558 L910,1558 L924,1602"/>
-          <!-- 下段タワー（テーパー）＋横のトラス2本 -->
-          <path d="M850,1558 L868,1474"/>
-          <path d="M910,1558 L892,1474"/>
-          <path d="M858,1528 L902,1528"/>
-          <path d="M863,1500 L897,1500"/>
-          <!-- 主展望台（丸みのある張り出し） -->
-          <path d="M860,1474 L860,1462 Q860,1453 870,1453 L890,1453 Q900,1453 900,1462 L900,1474 Z"/>
-          <!-- 上段タワー（テーパー） -->
-          <path d="M872,1453 L878,1416"/>
-          <path d="M888,1453 L882,1416"/>
-          <!-- 上部展望台 -->
-          <rect x="873" y="1406" width="14" height="10"/>
-          <!-- 尖塔・避雷球・アンテナ -->
-          <rect x="877" y="1382" width="6" height="24"/>
-          <circle cx="880" cy="1378" r="5"/>
-          <path d="M880,1373 L880,1354"/>
+          <!-- 脚部：外脚＋内脚＋中央アーチ（末広がりに開く） -->
+          <path d="M835,1602 L858,1548"/>
+          <path d="M925,1602 L902,1548"/>
+          <path d="M863,1602 L867,1548"/>
+          <path d="M897,1602 L893,1548"/>
+          <path d="M863,1602 Q880,1574 897,1602"/>
+          <path d="M858,1548 L902,1548"/>
+          <!-- 下段胴体：テーパー側面＋X字トラス（内部トラスは細め） -->
+          <path d="M858,1548 L866,1460"/>
+          <path d="M902,1548 L894,1460"/>
+          <path d="M862,1504 L898,1504"/>
+          <path d="M866,1460 L894,1460"/>
+          <g stroke-width="2.2">
+            <path d="M858,1548 L898,1504"/>
+            <path d="M902,1548 L862,1504"/>
+            <path d="M862,1504 L894,1460"/>
+            <path d="M898,1504 L866,1460"/>
+          </g>
+          <!-- 主展望台（張り出した横帯） -->
+          <rect x="856" y="1444" width="48" height="16"/>
+          <!-- 首部（くびれ） -->
+          <path d="M868,1444 L872,1416"/>
+          <path d="M892,1444 L888,1416"/>
+          <path d="M872,1416 L888,1416"/>
+          <!-- 王冠（ランタン型の台形展望塔）＋縦筋 -->
+          <path d="M870,1416 L874,1398 L886,1398 L890,1416 Z"/>
+          <g stroke-width="2.2">
+            <path d="M878,1416 L879,1398"/>
+            <path d="M882,1416 L881,1398"/>
+          </g>
+          <!-- 頂部の小さな笠 -->
+          <path d="M876,1398 L876,1392 L884,1392 L884,1398"/>
+          <!-- 尖塔・アンテナ -->
+          <path d="M880,1392 L880,1360"/>
         </g>
 
         <!-- 地平線（細い1本） -->
@@ -178,10 +195,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=7"></script>
-  <script src="js/api.js?v=7"></script>
-  <script src="js/scene.js?v=7"></script>
-  <script src="js/bloom.js?v=7"></script>
-  <script src="js/main.js?v=7"></script>
+  <script src="config.js?v=8"></script>
+  <script src="js/api.js?v=8"></script>
+  <script src="js/scene.js?v=8"></script>
+  <script src="js/bloom.js?v=8"></script>
+  <script src="js/main.js?v=8"></script>
 </body>
 </html>
