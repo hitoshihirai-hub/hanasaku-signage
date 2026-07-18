@@ -19,7 +19,7 @@ html, body {
   height: 100%;
   background: #2a1f15;       /* ステージ外の余白色（暗めにして額装風に） */
   overflow: hidden;
-  font-family: "Klee One", "Caveat", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   color: var(--warm-ink);
   -webkit-font-smoothing: antialiased;
 }
@@ -66,8 +66,8 @@ html, body {
   backdrop-filter: blur(2px);
 }
 .counter__title {
-  font-family: "Klee One", sans-serif;
-  font-weight: 600;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
   font-size: clamp(20px, 2.7vw, 46px);
   color: #4A3E2E;
   letter-spacing: 0.06em;
@@ -85,14 +85,15 @@ html, body {
   gap: 0.28em;
 }
 .counter__label {
-  font-family: "Klee One", sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
   font-size: clamp(14px, 1.5vw, 24px);
   color: #9A8E78;
   margin-right: 0.2em;
 }
 .counter__num {
-  font-family: "Klee One", sans-serif;
-  font-weight: 700;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 900;
   font-size: clamp(42px, 6vw, 104px);
   line-height: 1;
   color: #3E3428;
@@ -105,7 +106,8 @@ html, body {
   color: #D2694A;               /* 開花時だけ差し色 */
 }
 .counter__unit {
-  font-family: "Klee One", sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
   font-size: clamp(14px, 1.4vw, 22px);
   color: #9A8E78;
 }

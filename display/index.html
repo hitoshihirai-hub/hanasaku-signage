@@ -7,9 +7,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/display.css?v=8">
+  <link rel="stylesheet" href="css/display.css?v=9">
 </head>
 <body>
   <div class="stage" id="stage">
@@ -40,27 +40,47 @@
           <path d="M1004,1600 L1004,1572 L1074,1572 L1074,1600"/>
         </g>
 
-        <!-- ══ 大阪城（線画・忠実デフォルメ：石垣＋反りのある入母屋屋根を段々に） ══ -->
+        <!-- ══ 大阪城（線画・参考準拠：石垣＋4層天守＋千鳥破風＋鯱）
+             ※実在建造物の構造に基づく自作線画（ストック素材の複製ではない） ══ -->
         <g class="landmark landmark-castle"
            fill="none" stroke="#6E5A46" stroke-width="3.5"
            stroke-linejoin="round" stroke-linecap="round">
           <!-- 石垣（末広がり） -->
-          <path d="M138,1602 L168,1522 L242,1522 L272,1602"/>
-          <!-- 1層目 本体＋反り屋根 -->
-          <rect x="176" y="1498" width="58" height="24"/>
-          <path d="M164,1498 Q205,1478 246,1498"/>
+          <path d="M148,1602 L172,1556 L238,1556 L262,1602"/>
+
+          <!-- 1層目：壁＋入母屋屋根＋千鳥破風 -->
+          <rect x="176" y="1540" width="58" height="16"/>
+          <path d="M160,1540 L182,1524 L228,1524 L246,1540"/>
+          <path d="M197,1540 L205,1527 L213,1540"/>
+
           <!-- 2層目 -->
-          <rect x="184" y="1476" width="42" height="22"/>
-          <path d="M174,1476 Q205,1459 236,1476"/>
+          <rect x="182" y="1510" width="46" height="14"/>
+          <path d="M168,1510 L187,1496 L223,1496 L242,1510"/>
+          <path d="M198,1510 L205,1499 L212,1510"/>
+
           <!-- 3層目 -->
-          <rect x="190" y="1456" width="30" height="20"/>
-          <path d="M182,1456 Q205,1442 228,1456"/>
-          <!-- 4層目（最上層） -->
-          <rect x="196" y="1436" width="18" height="20"/>
-          <path d="M189,1436 Q205,1423 221,1436"/>
-          <!-- 金の鯱（最上屋根の両端） -->
-          <path d="M201,1424 q2,-5 0,-9"/>
-          <path d="M209,1424 q-2,-5 0,-9"/>
+          <rect x="187" y="1483" width="36" height="13"/>
+          <path d="M176,1483 L192,1470 L218,1470 L234,1483"/>
+          <path d="M199,1483 L205,1474 L211,1483"/>
+
+          <!-- 最上層（金の間）＋入母屋屋根 -->
+          <rect x="192" y="1457" width="26" height="13"/>
+          <path d="M182,1457 L196,1440 L214,1440 L228,1457"/>
+          <path d="M200,1457 L205,1450 L210,1457"/>
+          <!-- 金の鯱（大棟の両端） -->
+          <path d="M196,1440 q-3,-5 -1,-9 q3,2 4,5"/>
+          <path d="M214,1440 q3,-5 1,-9 q-3,2 -4,5"/>
+
+          <!-- 窓・格子（細め） -->
+          <g stroke-width="2">
+            <rect x="184" y="1544" width="7" height="8"/>
+            <rect x="201" y="1544" width="7" height="8"/>
+            <rect x="218" y="1544" width="7" height="8"/>
+            <rect x="190" y="1514" width="6" height="7"/>
+            <rect x="214" y="1514" width="6" height="7"/>
+            <rect x="199" y="1486" width="12" height="7"/>
+            <rect x="200" y="1460" width="10" height="7"/>
+          </g>
         </g>
 
         <!-- ══ 通天閣（線画・忠実デフォルメ：シルエット参考）
@@ -195,10 +215,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=8"></script>
-  <script src="js/api.js?v=8"></script>
-  <script src="js/scene.js?v=8"></script>
-  <script src="js/bloom.js?v=8"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="config.js?v=9"></script>
+  <script src="js/api.js?v=9"></script>
+  <script src="js/scene.js?v=9"></script>
+  <script src="js/bloom.js?v=9"></script>
+  <script src="js/main.js?v=9"></script>
 </body>
 </html>
