@@ -61,6 +61,25 @@
     return r ? r.children.length : 0;
   }
 
+  // 診断オーバーレイ「設定」行。bgop を含め、キー操作でのライブ変更も反映する。
+  function updateCfgLine() {
+    setText("diag-cfg",
+      `${cfg.source} / style=${cfg.style} / sway=${cfg.sway ? "on" : "off"}` +
+      ` / fx=${cfg.bgEffects ? "on" : "off"} / n=${cfg.seedCount} / max=${cfg.maxFlowers}` +
+      ` / bgop=${(cfg.bgOpacity != null ? cfg.bgOpacity : 0).toFixed(2)}`);
+  }
+
+  // 背景マップの淡さをライブで増減（[ = 薄く / ] = 濃く）。手元での微調整用。
+  function nudgeBgOpacity(delta) {
+    const img = document.querySelector("svg.scene image");
+    if (!img) return;
+    let v = parseFloat(img.getAttribute("opacity")) || 0;
+    v = Math.max(0, Math.min(1, Math.round((v + delta) * 100) / 100));
+    img.setAttribute("opacity", String(v));
+    cfg.bgOpacity = v;
+    updateCfgLine();
+  }
+
   function startDiag() {
     if (!cfg.diag) return;
     const panel = document.getElementById("diag");
@@ -70,9 +89,7 @@
     // 起動時に一度だけ確定する項目
     setText("diag-loaded", hhmmss(new Date(state.loadedAt)));
     setText("diag-ua", navigator.userAgent);
-    setText("diag-cfg",
-      `${cfg.source} / style=${cfg.style} / sway=${cfg.sway ? "on" : "off"}` +
-      ` / fx=${cfg.bgEffects ? "on" : "off"} / n=${cfg.seedCount} / max=${cfg.maxFlowers}`);
+    updateCfgLine();
 
     const scr = () => {
       const w = window.innerWidth, h = window.innerHeight;
@@ -217,6 +234,10 @@
         const p = document.getElementById("debug-panel");
         if (p) p.hidden = !p.hidden;
         refreshDebug();
+      } else if (e.key === "[") {
+        nudgeBgOpacity(-0.05);   // 背景マップを薄く
+      } else if (e.key === "]") {
+        nudgeBgOpacity(+0.05);   // 背景マップを濃く
       }
     });
   }

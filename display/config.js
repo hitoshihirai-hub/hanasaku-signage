@@ -87,5 +87,12 @@ window.DISPLAY_CONFIG = {
   if (q.get("fx")   === "0") { c.bgEffects = false; touched = true; }
   if (q.get("diag") === "1") { touched = true; }
 
+  // 背景マップの淡さをその場で試す（例 ?bgop=0.45）。0〜1 にクランプ。
+  const bgop = parseFloat(q.get("bgop"));
+  if (Number.isFinite(bgop)) {
+    c.bgOpacity = Math.max(0, Math.min(1, bgop));
+    touched = true;
+  }
+
   c.diag = touched;
 })();
