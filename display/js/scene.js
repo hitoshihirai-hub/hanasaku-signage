@@ -28,19 +28,26 @@ window.Scene = (function () {
      occupied.length は生きている花の数（消えた花は releasePosition で外れる）。
      花が少ないうちは下の帯だけを使い、増えるほど上へ帯を広げる＝積み上がる。
      帯の中でもさらに下寄りに寄せて、底に溜まっている雰囲気を出す。 */
+  /* 積み上がりの上端。
+     背景スカイラインの足元(pileGroundY)から溜まり始め、花が増えるほど上へ。
+     pileCurve>1 なので序盤は低いまま伸びず、たくさん溜まって初めて
+     スカイラインに掛かり始める＝背景の街がすぐには隠れない。 */
   function bandTopY() {
     const cfg  = window.DISPLAY_CONFIG || {};
     const max  = cfg.maxFlowers || 90;
     const fill = Math.min(1, occupied.length / max);      // 0（空）〜1（満杯）
-    const span = FIELD.y1 - FIELD.y0;
-    // 空なら下から14%だけ。満杯でも上限70%までしか上がらず、常に下に溜まる。
-    return FIELD.y1 - span * (0.14 + 0.56 * fill);
+    const ground = cfg.pileGroundY != null ? cfg.pileGroundY : 1700;
+    const topFull = cfg.pileTopY   != null ? cfg.pileTopY   : 1360;
+    const t = Math.pow(fill, cfg.pileCurve != null ? cfg.pileCurve : 1.25);
+    return ground - (ground - topFull) * t;
   }
 
   function randomYInBand(top) {
-    // 指数<1 で下（y1側）に強く寄せる。小さいほど底に密集する。
+    const cfg = window.DISPLAY_CONFIG || {};
+    const bottom = cfg.pileBottomY != null ? cfg.pileBottomY : 1895;
+    // 指数<1 で下側に強く寄せる。小さいほど底に密集する。
     const t = Math.pow(Math.random(), 0.32);
-    return top + t * (FIELD.y1 - top);
+    return top + t * (bottom - top);
   }
 
   // 占有スロットは push した object をそのまま返す。

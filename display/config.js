@@ -40,8 +40,17 @@ window.DISPLAY_CONFIG = {
   bgMode:    "band",
   bgOpacity: 0.85,           // 線画なので薄めすぎない
   bgAlign:   "xMaxYMid",     // cover のとき、画像のどこを見せるか
-  bgBandBottomY: 1806,       // band のとき、帯の下端をこのY座標に合わせる
+  bgBandBottomY: 1700,       // band のとき、帯の下端をこのY座標に合わせる
   bgBandWidth:   1.0,        // band のとき、画面幅に対する倍率
+
+  // 花の「積み上がり」範囲。
+  // 背景スカイラインの足元(pileGroundY)から下に溜まり始め、
+  // 花が増えるほど上へ伸びる。満杯でも pileTopY までしか上がらないので、
+  // よほど溜まらない限り背景の街は隠れない。
+  pileGroundY: 1700,         // 溜まり始める高さ（＝スカイラインの足元）
+  pileBottomY: 1895,         // 画面下端側の限界
+  pileTopY:    1360,         // 満杯のときに届く一番上
+  pileCurve:   1.25,         // >1 で「序盤は低いまま、増えてから上がる」
 
   // デバッグ操作（F=花追加 / R=リセット / D=パネル切替）を有効にする
   debug: true,
