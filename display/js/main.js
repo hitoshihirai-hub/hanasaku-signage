@@ -231,9 +231,16 @@
         setCounter("count-today", 0);
         refreshDebug();
       } else if (k === "d") {
-        const p = document.getElementById("debug-panel");
-        if (p) p.hidden = !p.hidden;
-        refreshDebug();
+        // 診断オーバーレイが出ているときは、それを消す／戻す（全体確認用）。
+        // 出ていないときは従来どおりデバッグパネルを切り替える。
+        const diagEl = document.getElementById("diag");
+        if (cfg.diag && diagEl) {
+          diagEl.hidden = !diagEl.hidden;
+        } else {
+          const p = document.getElementById("debug-panel");
+          if (p) p.hidden = !p.hidden;
+          refreshDebug();
+        }
       } else if (e.key === "[") {
         nudgeBgOpacity(-0.05);   // 背景マップを薄く
       } else if (e.key === "]") {

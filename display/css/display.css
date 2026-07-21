@@ -178,7 +178,10 @@ html, body {
   top: 16px;
   left: 16px;
   padding: 14px 18px;
-  background: rgba(0, 0, 0, 0.78);
+  /* 全体のデザイン確認を邪魔しないよう半透明。
+     ?diag=0 で非表示、D キーで表示/非表示を切替できる。 */
+  background: rgba(0, 0, 0, 0.42);
+  opacity: 0.62;
   color: #fff;
   font-family: "Consolas", "Courier New", monospace;
   border-radius: 10px;

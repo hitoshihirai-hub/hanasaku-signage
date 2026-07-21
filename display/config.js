@@ -33,7 +33,7 @@ window.DISPLAY_CONFIG = {
   // 含まれるため）。読み込めなければ線画のまま（＝公開URLでは安全側）。
   // NOTE: 画像は .gitignore 済み。購入・ライセンス確認が済むまで公開しない。
   bgImage:   "assets/bg-map.png",
-  bgOpacity: 0.30,           // 淡さ（0=透明〜1=不透明）。花を活かすため薄め
+  bgOpacity: 0.14,           // 淡さ（0=透明〜1=不透明）。花と線画を主役にするため薄く
   bgAlign:   "xMaxYMid",     // 画像のどこを見せるか。右側を見せるので xMax
 
   // デバッグ操作（F=花追加 / R=リセット / D=パネル切替）を有効にする
@@ -94,5 +94,7 @@ window.DISPLAY_CONFIG = {
     touched = true;
   }
 
-  c.diag = touched;
+  // ?diag=0 なら、他のテスト用パラメータが付いていても診断表示を出さない
+  // （全体のデザインを邪魔なく確認したいとき用）
+  c.diag = (q.get("diag") === "0") ? false : touched;
 })();

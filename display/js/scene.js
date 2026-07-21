@@ -19,8 +19,8 @@ window.Scene = (function () {
   // 手前の帯を空けてランドマークを見せる。
   const FIELD = { x0: 80, y0: 360, x1: 1000, y1: 1720 };
   // 花から茎・葉を廃したことで実寸が小さくなった（bbox 約61x58）。
-  // 最小間隔も詰めて、下に密に積み上がれるようにする。
-  const MIN_DIST = 92;
+  // 下に密に積み上がる見た目にするため、最小間隔をさらに詰める。
+  const MIN_DIST = 58;
   const MAX_TRIES = 24;
   const occupied = [];
 
@@ -33,13 +33,13 @@ window.Scene = (function () {
     const max  = cfg.maxFlowers || 90;
     const fill = Math.min(1, occupied.length / max);      // 0（空）〜1（満杯）
     const span = FIELD.y1 - FIELD.y0;
-    // 空でも下から22%は使う。満杯で全面まで広がる。
-    return FIELD.y1 - span * (0.22 + 0.78 * fill);
+    // 空なら下から14%だけ。満杯でも上限70%までしか上がらず、常に下に溜まる。
+    return FIELD.y1 - span * (0.14 + 0.56 * fill);
   }
 
   function randomYInBand(top) {
-    // 指数<1 で下（y1側）に寄せる
-    const t = Math.pow(Math.random(), 0.45);
+    // 指数<1 で下（y1側）に強く寄せる。小さいほど底に密集する。
+    const t = Math.pow(Math.random(), 0.32);
     return top + t * (FIELD.y1 - top);
   }
 
