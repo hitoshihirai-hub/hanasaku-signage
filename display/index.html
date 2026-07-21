@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/display.css?v=17">
+  <link rel="stylesheet" href="css/display.css?v=18">
 </head>
 <body>
   <div class="stage" id="stage">
@@ -25,6 +25,28 @@
 
       <!-- 太陽（細い輪郭のみ） -->
       <circle cx="866" cy="298" r="96" fill="none" stroke="#E4DAC2" stroke-width="4"/>
+
+      <!-- 余白に点在する花びら（線画のみ）。
+           Sakana のページで白地に小さな魚が散っているのと同じ役割で、
+           何も無い上半分が「殺風景」に見えるのを防ぐ。
+           vector-effect で拡大しても線の太さを一定に保つ。 -->
+      <g class="drift-petals" fill="none" stroke="#DCD5C4" stroke-width="2.2"
+         stroke-linejoin="round" vector-effect="non-scaling-stroke">
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(150,430) rotate(-20) scale(1.7)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(336,352) rotate(34) scale(1.2)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(523,470) rotate(-52) scale(2.0)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(762,381) rotate(14) scale(1.4)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(944,524) rotate(-31) scale(1.8)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(92,648) rotate(61) scale(1.3)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(423,706) rotate(-16) scale(1.9)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(681,624) rotate(46) scale(1.2)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(884,764) rotate(-62) scale(1.5)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(224,866) rotate(24) scale(1.6)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(566,902) rotate(-41) scale(1.3)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(982,948) rotate(9) scale(1.45)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(362,1062) rotate(-26) scale(1.5)"/>
+        <path d="M0,0 C-5,-3 -6,-12 0,-16 C6,-12 5,-3 0,0 Z" transform="translate(742,1034) rotate(51) scale(1.2)"/>
+      </g>
 
       <!-- 街並み一式（地平線・一般ビル・大阪城・通天閣）。
            画面下端近くに配置するためまとめて下へ平行移動する。 -->
@@ -43,7 +65,8 @@
         <!-- ══ 大阪城（線画・参考準拠：石垣＋4層天守＋千鳥破風＋鯱）
              ※実在建造物の構造に基づく自作線画（ストック素材の複製ではない） ══ -->
         <g class="landmark landmark-castle"
-           fill="none" stroke="#6E5A46" stroke-width="3.5"
+           transform="translate(205,1602) scale(1.9) translate(-205,-1602)"
+           fill="none" stroke="#6E5A46" stroke-width="2"
            stroke-linejoin="round" stroke-linecap="round">
           <!-- 石垣（末広がり） -->
           <path d="M148,1602 L172,1556 L238,1556 L262,1602"/>
@@ -71,8 +94,8 @@
           <path d="M196,1440 q-3,-5 -1,-9 q3,2 4,5"/>
           <path d="M214,1440 q3,-5 1,-9 q-3,2 -4,5"/>
 
-          <!-- 窓・格子（細め） -->
-          <g stroke-width="2">
+          <!-- 窓・格子（細め。親を1.9倍しているので線幅は割り戻す） -->
+          <g stroke-width="1.1">
             <rect x="184" y="1544" width="7" height="8"/>
             <rect x="201" y="1544" width="7" height="8"/>
             <rect x="218" y="1544" width="7" height="8"/>
@@ -86,7 +109,8 @@
         <!-- ══ 通天閣（線画・忠実デフォルメ：シルエット参考）
              エッフェル塔型の開脚アーチ＋X字トラス＋主展望台＋王冠(ランタン)＋尖塔 ══ -->
         <g class="landmark landmark-tower"
-           fill="none" stroke="#6E5A46" stroke-width="3.5"
+           transform="translate(880,1602) scale(1.65) translate(-880,-1602)"
+           fill="none" stroke="#6E5A46" stroke-width="2.1"
            stroke-linejoin="round" stroke-linecap="round">
           <!-- 脚部：外脚＋内脚＋中央アーチ（末広がりに開く） -->
           <path d="M835,1602 L858,1548"/>
@@ -100,7 +124,7 @@
           <path d="M902,1548 L894,1460"/>
           <path d="M862,1504 L898,1504"/>
           <path d="M866,1460 L894,1460"/>
-          <g stroke-width="2.2">
+          <g stroke-width="1.3">
             <path d="M858,1548 L898,1504"/>
             <path d="M902,1548 L862,1504"/>
             <path d="M862,1504 L894,1460"/>
@@ -114,7 +138,7 @@
           <path d="M872,1416 L888,1416"/>
           <!-- 王冠（ランタン型の台形展望塔）＋縦筋 -->
           <path d="M870,1416 L874,1398 L886,1398 L890,1416 Z"/>
-          <g stroke-width="2.2">
+          <g stroke-width="1.3">
             <path d="M878,1416 L879,1398"/>
             <path d="M882,1416 L881,1398"/>
           </g>
@@ -215,10 +239,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=17"></script>
-  <script src="js/api.js?v=17"></script>
-  <script src="js/scene.js?v=17"></script>
-  <script src="js/bloom.js?v=17"></script>
-  <script src="js/main.js?v=17"></script>
+  <script src="config.js?v=18"></script>
+  <script src="js/api.js?v=18"></script>
+  <script src="js/scene.js?v=18"></script>
+  <script src="js/bloom.js?v=18"></script>
+  <script src="js/main.js?v=18"></script>
 </body>
 </html>
