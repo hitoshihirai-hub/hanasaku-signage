@@ -29,7 +29,10 @@ html, body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width:  min(100vw, calc(100vh * 9 / 16));
+  /* ステージ実幅。文字サイズをこれに連動させると、レターボックス時
+     （画面比が9:16でないとき）でも比率どおりに収まる。 */
+  --stage-w: min(100vw, calc(100vh * 9 / 16));
+  width:  var(--stage-w);
   height: min(100vh, calc(100vw * 16 / 9));
   transform: translate(-50%, -50%);
   background: #FCFBF7;              /* 背景SVGと同じ白（読み込み前のチラつき防止） */
@@ -68,9 +71,11 @@ html, body {
 .counter__title {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 700;
-  font-size: clamp(20px, 2.7vw, 46px);
+  /* ステージ幅の5%。12文字＋字間で約7割に収まり、必ず1行になる */
+  font-size: calc(var(--stage-w) * 0.05);
+  white-space: nowrap;          /* 折り返さない */
   color: #4A3E2E;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   margin-bottom: 0.5em;
 }
 .counter__row {
@@ -87,14 +92,15 @@ html, body {
 .counter__label {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 500;
-  font-size: clamp(14px, 1.5vw, 24px);
+  font-size: calc(var(--stage-w) * 0.026);
   color: #9A8E78;
   margin-right: 0.2em;
 }
 .counter__num {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 900;
-  font-size: clamp(42px, 6vw, 104px);
+  /* ステージ幅連動。vw だと縦横比が9:16でない画面で溢れる */
+  font-size: calc(var(--stage-w) * 0.10);
   line-height: 1;
   color: #3E3428;
   min-width: 1.6em;
@@ -108,7 +114,7 @@ html, body {
 .counter__unit {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 500;
-  font-size: clamp(14px, 1.4vw, 22px);
+  font-size: calc(var(--stage-w) * 0.022);
   color: #9A8E78;
 }
 .counter__divider {

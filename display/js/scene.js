@@ -18,17 +18,38 @@ window.Scene = (function () {
   // y1 は花が咲く下限。街並み（地平線 y=1602）を花で埋めないよう、
   // 手前の帯を空けてランドマークを見せる。
   const FIELD = { x0: 80, y0: 360, x1: 1000, y1: 1720 };
-  const MIN_DIST = 150;
+  // 花から茎・葉を廃したことで実寸が小さくなった（bbox 約61x58）。
+  // 最小間隔も詰めて、下に密に積み上がれるようにする。
+  const MIN_DIST = 92;
   const MAX_TRIES = 24;
   const occupied = [];
+
+  /* 「下から積み上がる」配置。
+     occupied.length は生きている花の数（消えた花は releasePosition で外れる）。
+     花が少ないうちは下の帯だけを使い、増えるほど上へ帯を広げる＝積み上がる。
+     帯の中でもさらに下寄りに寄せて、底に溜まっている雰囲気を出す。 */
+  function bandTopY() {
+    const cfg  = window.DISPLAY_CONFIG || {};
+    const max  = cfg.maxFlowers || 90;
+    const fill = Math.min(1, occupied.length / max);      // 0（空）〜1（満杯）
+    const span = FIELD.y1 - FIELD.y0;
+    // 空でも下から22%は使う。満杯で全面まで広がる。
+    return FIELD.y1 - span * (0.22 + 0.78 * fill);
+  }
+
+  function randomYInBand(top) {
+    // 指数<1 で下（y1側）に寄せる
+    const t = Math.pow(Math.random(), 0.45);
+    return top + t * (FIELD.y1 - top);
+  }
 
   // 占有スロットは push した object をそのまま返す。
   // 花が消えるとき releasePosition(ref) で同じ参照を外し、場所を再利用可能にする。
   function pickPosition() {
+    const top = bandTopY();
     for (let i = 0; i < MAX_TRIES; i++) {
       const x = FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0);
-      const t = Math.pow(Math.random(), 0.7);
-      const y = FIELD.y0 + t * (FIELD.y1 - FIELD.y0);
+      const y = randomYInBand(top);
       if (!collides(x, y)) {
         const ref = { x, y };
         occupied.push(ref);
@@ -37,7 +58,7 @@ window.Scene = (function () {
     }
     const ref = {
       x: FIELD.x0 + Math.random() * (FIELD.x1 - FIELD.x0),
-      y: FIELD.y0 + Math.random() * (FIELD.y1 - FIELD.y0),
+      y: randomYInBand(top),
     };
     occupied.push(ref);
     return ref;
