@@ -60,10 +60,13 @@ html, body {
   top: 3%;
   left: 4%;
   right: 4%;
-  padding: 1.1em 1.2em 0.95em;
+  /* カウンタ内の em 基準をステージ幅に連動させる。
+     これで文字も余白も同じ比率で拡縮し、桁数が増えても溢れない。 */
+  font-size: calc(var(--stage-w) * 0.028);
+  padding: 1.0em 1.1em 0.85em;
   background: rgba(255, 255, 255, 0.80);
   border: 1.5px solid #DAD4C6;
-  border-radius: 16px;
+  border-radius: 0.55em;
   box-shadow: 0 2px 12px rgba(120,110,90,0.08);
   text-align: center;
   backdrop-filter: blur(2px);
@@ -71,18 +74,18 @@ html, body {
 .counter__title {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 700;
-  /* ステージ幅の5%。12文字＋字間で約7割に収まり、必ず1行になる */
-  font-size: calc(var(--stage-w) * 0.05);
+  font-size: 1.75em;            /* ≒ ステージ幅の5%。必ず1行に収まる大きさ */
   white-space: nowrap;          /* 折り返さない */
   color: #4A3E2E;
   letter-spacing: 0.04em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.45em;
 }
 .counter__row {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 1.5em;
+  gap: 1.1em;
+  white-space: nowrap;          /* 桁が増えても折り返さない */
 }
 .counter__cell {
   display: flex;
@@ -92,15 +95,15 @@ html, body {
 .counter__label {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 500;
-  font-size: calc(var(--stage-w) * 0.026);
+  font-size: 0.9em;
   color: #9A8E78;
-  margin-right: 0.2em;
+  margin-right: 0.15em;
 }
 .counter__num {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 900;
-  /* ステージ幅連動。vw だと縦横比が9:16でない画面で溢れる */
-  font-size: calc(var(--stage-w) * 0.10);
+  /* カウンタ基準の相対サイズ。5桁（累計10,000輪超）でも収まる大きさ */
+  font-size: 3.1em;
   line-height: 1;
   color: #3E3428;
   min-width: 1.6em;
@@ -114,7 +117,7 @@ html, body {
 .counter__unit {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 500;
-  font-size: calc(var(--stage-w) * 0.022);
+  font-size: 0.78em;
   color: #9A8E78;
 }
 .counter__divider {
