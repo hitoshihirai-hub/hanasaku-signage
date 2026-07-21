@@ -140,24 +140,39 @@
     const img = document.createElementNS(NS, "image");
     img.setAttribute("href", src);
     img.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", src);
-    img.setAttribute("x", "0");
-    img.setAttribute("y", "0");
-    img.setAttribute("width", "1080");
-    img.setAttribute("height", "1920");
-    // 右側を見せる（xMax）＋はみ出しは slice で切る＝カバー表示
-    img.setAttribute("preserveAspectRatio", (cfg.bgAlign || "xMaxYMid") + " slice");
     img.setAttribute("opacity", String(cfg.bgOpacity != null ? cfg.bgOpacity : 0.3));
 
+    if (cfg.bgMode === "band") {
+      // 横長のスカイラインを画面下部に帯として敷く。
+      // 縦横比は読み込み後に判明するので、load 時に高さとYを確定させる。
+      const w = 1080 * (cfg.bgBandWidth || 1);
+      img.setAttribute("x", String((1080 - w) / 2));
+      img.setAttribute("width", String(w));
+      img.setAttribute("preserveAspectRatio", "xMidYMax meet");
+      // SVGImageElement は naturalWidth を持たないため、別途読み込んで実寸を得る
+      const probe = new Image();
+      probe.onload = () => {
+        const h = w * (probe.naturalHeight / probe.naturalWidth);
+        img.setAttribute("height", String(h));
+        img.setAttribute("y", String((cfg.bgBandBottomY || 1806) - h));
+      };
+      probe.src = src;
+    } else {
+      img.setAttribute("x", "0");
+      img.setAttribute("y", "0");
+      img.setAttribute("width", "1080");
+      img.setAttribute("height", "1920");
+      // 右側を見せる（xMax）＋はみ出しは slice で切る＝カバー表示
+      img.setAttribute("preserveAspectRatio", (cfg.bgAlign || "xMaxYMid") + " slice");
+    }
+
     img.addEventListener("load", () => {
-      // マップにはランドマーク・街並みが含まれるので、白背景と画像以外の
-      // 線画背景（太陽・街並み・城・塔・地平線）を全部隠す。
-      Array.prototype.forEach.call(scene.children, el => {
-        if (el === img) return;
-        if (el.tagName && el.tagName.toLowerCase() === "rect") return; // 白背景は残す
-        el.style.display = "none";
-      });
+      // 背景画像には街並み・ランドマークが含まれるので、自作の街だけを隠す。
+      // 点在する花びら・太陽は残す（余白が殺風景に見えないための要素）。
+      const city = scene.querySelector(".cityline");
+      if (city) city.style.display = "none";
     });
-    // 失敗時は何もしない（線画背景が残る＝公開URLで安全側）
+    // 失敗時は何もしない（自作の線画の街が残る＝公開URLで安全側）
 
     // 白背景 rect の直後（線画より背面）に挿入
     const rect = scene.querySelector("rect");

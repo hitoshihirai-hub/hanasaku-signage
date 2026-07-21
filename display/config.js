@@ -32,11 +32,16 @@ window.DISPLAY_CONFIG = {
   // ファイルが読み込めたら自作の線画ランドマークは隠す（マップに城/塔が
   // 含まれるため）。読み込めなければ線画のまま（＝公開URLでは安全側）。
   // NOTE: 画像は .gitignore 済み。購入・ライセンス確認が済むまで公開しない。
-  // ※ 現在は無効。自前の線画（大きな街＋点在する花びら）で余白を持たせる方針。
-  //   マップを使いたいときは "assets/bg-map.png" に戻す（ローカルのみ・非公開）。
-  bgImage:   null,
-  bgOpacity: 0.14,           // 淡さ（0=透明〜1=不透明）
-  bgAlign:   "xMaxYMid",     // 画像のどこを見せるか。右側を見せるので xMax
+  // 背景画像。bgMode で置き方が変わる。
+  //   "band"  … 横長のスカイラインを画面下部に帯として敷く（線画向き）
+  //   "cover" … 全面を覆って淡く敷く（水彩マップ向き）
+  // 画像は .gitignore 済み。購入・ライセンス確認が済むまで公開しない。
+  bgImage:   "assets/bg-skyline.png",
+  bgMode:    "band",
+  bgOpacity: 0.85,           // 線画なので薄めすぎない
+  bgAlign:   "xMaxYMid",     // cover のとき、画像のどこを見せるか
+  bgBandBottomY: 1806,       // band のとき、帯の下端をこのY座標に合わせる
+  bgBandWidth:   1.0,        // band のとき、画面幅に対する倍率
 
   // デバッグ操作（F=花追加 / R=リセット / D=パネル切替）を有効にする
   debug: true,
