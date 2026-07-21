@@ -127,6 +127,39 @@ html, body {
   border-radius: 2px;
 }
 
+/* 注釈（中央の余白に置く一文）
+   通りすがりの人に「この花が何か」を伝える。
+   同時に、白い余白の重心にもなる（Sakana のタグラインと同じ役割）。
+   文字サイズはステージ幅連動。花の山（上限 y=1360）より上に置く。 */
+.note {
+  position: absolute;
+  top: 34%;
+  left: 6%;
+  right: 6%;
+  text-align: center;
+  font-size: calc(var(--stage-w) * 0.028);
+  line-height: 1.7;
+  pointer-events: none;
+}
+.note__main {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  font-size: 1.12em;
+  color: #6B5E4A;
+  letter-spacing: 0.05em;
+  margin: 0;
+  white-space: nowrap;
+}
+.note__sub {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 0.9em;
+  color: #A99B84;
+  letter-spacing: 0.04em;
+  margin: 0.6em 0 0;
+  white-space: nowrap;
+}
+
 /* 花：bloom.js の rAF 落下アニメが opacity と outer の transform を制御する。
    CSS は transform の基準点のみ定義し、初期状態は透明。 */
 .flower {
