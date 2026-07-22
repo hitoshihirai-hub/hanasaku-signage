@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/display.css?v=23">
+  <link rel="stylesheet" href="css/display.css?v=25">
 </head>
 <body>
   <div class="stage" id="stage">
@@ -54,20 +54,75 @@
            （点在する花びら・太陽は残す）。 -->
       <g class="cityline" transform="translate(0,98)">
 
-        <!-- 一般の街並み（線画・淡め。中央と両端に控えめに配置し余白を残す） -->
-        <g fill="none" stroke="#B4AA92" stroke-width="3"
+        <!-- ══ 観覧車（左）ハブ・スポーク・ゴンドラ・支柱 ══ -->
+        <g class="landmark landmark-wheel"
+           fill="none" stroke="#6E5A46" stroke-width="3"
            stroke-linejoin="round" stroke-linecap="round">
-          <path d="M0,1600 L0,1576 L74,1576 L74,1600"/>
-          <path d="M300,1600 L300,1560 L362,1560 L362,1590 L430,1590 L430,1552
-                   L500,1552 L500,1584 L560,1584 L560,1566 L622,1566 L622,1592
-                   L690,1592 L690,1558 L760,1558 L760,1600"/>
-          <path d="M1004,1600 L1004,1572 L1074,1572 L1074,1600"/>
+          <!-- 支柱 -->
+          <path d="M74,1602 L124,1494"/>
+          <path d="M174,1602 L124,1494"/>
+          <path d="M92,1560 L156,1560"/>
+          <!-- リム（外周・内周） -->
+          <circle cx="124" cy="1494" r="78"/>
+          <circle cx="124" cy="1494" r="66"/>
+          <circle cx="124" cy="1494" r="7"/>
+          <!-- スポーク（12本） -->
+          <g stroke-width="1.6">
+            <path d="M124,1428 L124,1560"/>
+            <path d="M58,1494 L190,1494"/>
+            <path d="M77,1447 L171,1541"/>
+            <path d="M171,1447 L77,1541"/>
+            <path d="M91,1437 L157,1551"/>
+            <path d="M157,1437 L91,1551"/>
+            <path d="M67,1461 L181,1527"/>
+            <path d="M181,1461 L67,1527"/>
+          </g>
+          <!-- ゴンドラ（外周上に8つ） -->
+          <g stroke-width="2.2">
+            <circle cx="124" cy="1416" r="9"/>
+            <circle cx="124" cy="1572" r="9"/>
+            <circle cx="46"  cy="1494" r="9"/>
+            <circle cx="202" cy="1494" r="9"/>
+            <circle cx="69"  cy="1439" r="9"/>
+            <circle cx="179" cy="1549" r="9"/>
+            <circle cx="179" cy="1439" r="9"/>
+            <circle cx="69"  cy="1549" r="9"/>
+          </g>
+        </g>
+
+        <!-- ══ ビル群（中央）── 高さ・幅に変化をつけた線画 ══ -->
+        <g fill="none" stroke="#8C8168" stroke-width="2.6"
+           stroke-linejoin="round" stroke-linecap="round">
+          <!-- 低層 -->
+          <path d="M236,1602 L236,1500 L292,1500 L292,1602"/>
+          <!-- 高層（アンテナ付き） -->
+          <path d="M302,1602 L302,1448 L350,1448 L350,1602"/>
+          <path d="M326,1448 L326,1424"/>
+          <!-- 中層 -->
+          <path d="M360,1602 L360,1518 L414,1518 L414,1602"/>
+          <!-- 最高層 -->
+          <path d="M424,1602 L424,1418 L470,1418 L470,1602"/>
+          <!-- 台形の塔屋 -->
+          <path d="M480,1602 L480,1486 L500,1462 L524,1462 L544,1486 L544,1602"/>
+          <!-- 中層 -->
+          <path d="M554,1602 L554,1512 L604,1512 L604,1602"/>
+          <!-- 窓（細線・控えめ） -->
+          <g stroke-width="1.4">
+            <path d="M250,1520 L278,1520"/><path d="M250,1544 L278,1544"/><path d="M250,1568 L278,1568"/>
+            <path d="M314,1470 L338,1470"/><path d="M314,1494 L338,1494"/>
+            <path d="M314,1518 L338,1518"/><path d="M314,1542 L338,1542"/><path d="M314,1566 L338,1566"/>
+            <path d="M372,1538 L402,1538"/><path d="M372,1562 L402,1562"/>
+            <path d="M436,1440 L458,1440"/><path d="M436,1464 L458,1464"/>
+            <path d="M436,1488 L458,1488"/><path d="M436,1512 L458,1512"/>
+            <path d="M436,1536 L458,1536"/><path d="M436,1560 L458,1560"/>
+            <path d="M566,1534 L592,1534"/><path d="M566,1558 L592,1558"/>
+          </g>
         </g>
 
         <!-- ══ 大阪城（線画・参考準拠：石垣＋4層天守＋千鳥破風＋鯱）
              ※実在建造物の構造に基づく自作線画（ストック素材の複製ではない） ══ -->
         <g class="landmark landmark-castle"
-           transform="translate(205,1602) scale(1.9) translate(-205,-1602)"
+           transform="translate(535,0) translate(205,1602) scale(1.75) translate(-205,-1602)"
            fill="none" stroke="#6E5A46" stroke-width="2"
            stroke-linejoin="round" stroke-linecap="round">
           <!-- 石垣（末広がり） -->
@@ -111,7 +166,7 @@
         <!-- ══ 通天閣（線画・忠実デフォルメ：シルエット参考）
              エッフェル塔型の開脚アーチ＋X字トラス＋主展望台＋王冠(ランタン)＋尖塔 ══ -->
         <g class="landmark landmark-tower"
-           transform="translate(880,1602) scale(1.65) translate(-880,-1602)"
+           transform="translate(112,0) translate(880,1602) scale(1.5) translate(-880,-1602)"
            fill="none" stroke="#6E5A46" stroke-width="2.1"
            stroke-linejoin="round" stroke-linecap="round">
           <!-- 脚部：外脚＋内脚＋中央アーチ（末広がりに開く） -->
@@ -249,10 +304,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=23"></script>
-  <script src="js/api.js?v=23"></script>
-  <script src="js/scene.js?v=23"></script>
-  <script src="js/bloom.js?v=23"></script>
-  <script src="js/main.js?v=23"></script>
+  <script src="config.js?v=25"></script>
+  <script src="js/api.js?v=25"></script>
+  <script src="js/scene.js?v=25"></script>
+  <script src="js/bloom.js?v=25"></script>
+  <script src="js/main.js?v=25"></script>
 </body>
 </html>

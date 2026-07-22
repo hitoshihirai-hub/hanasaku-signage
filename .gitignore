@@ -44,6 +44,10 @@ pdf_pages/
 # 正規ファイルをコミットする。
 display/assets/bg-map.png
 display/assets/bg-map.*
-display/assets/bg-skyline.*
+# bg-skyline.png はライセンス購入済み（Pixta 129944827・透かし無し）のため公開する。
+
+# 購入素材の元ファイル（配布物ではないのでリポジトリには入れない）
+pixta_*.png
+pixta_*.jpg
 7-23テスト準備ツール.html
 7-23当日マニュアル.html
