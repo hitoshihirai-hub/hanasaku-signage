@@ -12,11 +12,16 @@ window.DISPLAY_CONFIG = {
 
   // 初回ロード時、既存花を「咲きおえた状態」で並べるか（true）、
   // 全部 fresh bloom で見せるか（false）。
-  // NOTE: OTOMO はスケジュールで出たり消えたりするため、登場のたびに
-  //       まっさらな新規ロードになる。本番は false（登場＝毎回フル開花
-  //       ショー）が正しい。true のままだと「無言で花が並ぶだけ」になり、
-  //       開花アニメが誰にも見られない。7/23 のテスト後に確定する。
+  // NOTE: 7/23の実機テストで、STBは Android 7.1.2 の非力な機械と判明
+  //       （n=100で8fps / n=600で1fps）。全花を降らせる演出は紙芝居に
+  //       なるため true に確定。登場時は満開の街が現れ、その後に届いた
+  //       新着だけがぽつぽつ降る（同時に動くのは数輪＝負荷が桁違いに低い）。
+  //       旧演出は ?show=1 で比較できる。
   initialBloomAsSettled: true,
+
+  // 1回のポーリングで「降らせる」最大数。これを超えた分は静かに配置する。
+  // 長時間ぶんの新着がまとめて届いても、動くのは数輪に保たれる。
+  maxAnimateAtOnce: 6,
 
   // 画面に同時に咲かせる最大数。超えたら古い花から静かにフェードアウトする。
   // NOTE: この値は2つの制約の小さい方で決まる:
@@ -94,10 +99,13 @@ window.DISPLAY_CONFIG = {
 
   if (q.get("demo") === "1") {
     c.source = "dummy";
-    c.initialBloomAsSettled = false; // 登場＝毎回フル開花ショー
-    c.pollIntervalMs = 8 * 1000;     // 保持フェーズのライブ感を確認しやすく
+    c.pollIntervalMs = 8 * 1000;     // 新着が降る様子を確認しやすく
     touched = true;
   }
+
+  // ?show=1 … 登場時に全部を降らせる旧演出（比較用）。
+  // 非力な機械では重いので本番では使わない想定。
+  if (q.get("show") === "1") { c.initialBloomAsSettled = false; touched = true; }
 
   const n = parseInt(q.get("n"), 10);
   if (Number.isFinite(n) && n > 0) {

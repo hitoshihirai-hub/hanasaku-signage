@@ -196,12 +196,20 @@
     try {
       const data = await FlowerAPI.fetchFlowers(state.sinceId);
 
+      const list = data.newFlowers;
+      const cap  = cfg.maxAnimateAtOnce || 6;
+
       if (state.isFirstLoad && cfg.initialBloomAsSettled) {
-        // 初回：既にある花は静かに並べるだけ
-        Bloom.settle(data.newFlowers);
+        // 登場時：既にある花は満開の状態で一気に並べる（アニメなし＝軽い）
+        Bloom.settle(list);
+      } else if (list.length > cap) {
+        // 新着がまとめて届いた場合も、動かすのは最新の数輪だけにする。
+        // 残りは静かに配置して、非力な機械でも負荷を一定に保つ。
+        Bloom.settle(list.slice(0, list.length - cap));
+        Bloom.bloomNew(list.slice(list.length - cap));
       } else {
-        // 通常：新規花だけ一斉開花
-        Bloom.bloomNew(data.newFlowers);
+        // 通常：新着だけがぽつぽつ降ってくる
+        Bloom.bloomNew(list);
       }
       Bloom.pruneTo(cfg.maxFlowers);
 
