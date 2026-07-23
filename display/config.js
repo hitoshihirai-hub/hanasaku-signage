@@ -28,6 +28,13 @@ window.DISPLAY_CONFIG = {
   // 開花ショーの目安尺（ミリ秒）。花数によらずこの時間内に降り終える。
   showDurationMs: 60 * 1000,
 
+  // 1輪が落ちきるまでの時間（ミリ秒）。この範囲でランダムになる。
+  // NOTE: 大画面を離れて見るため、ゆっくり漂うくらいが見やすい。
+  //   低FPSの機械では速いほど1コマの移動距離が大きくカクついて見えるので、
+  //   遅くすると滑らかさも改善する。?fall=8000 でその場で試せる。
+  fallMinMs: 6000,
+  fallMaxMs: 9500,
+
   // 背景マップ画像（方法B＝淡く敷く）。
   // ファイルが読み込めたら自作の線画ランドマークは隠す（マップに城/塔が
   // 含まれるため）。読み込めなければ線画のまま（＝公開URLでは安全側）。
@@ -110,6 +117,15 @@ window.DISPLAY_CONFIG = {
   const bgop = parseFloat(q.get("bgop"));
   if (Number.isFinite(bgop)) {
     c.bgOpacity = Math.max(0, Math.min(1, bgop));
+    touched = true;
+  }
+
+  // 落下の速さをその場で試す（例 ?fall=8000 なら 8.0〜12.7秒）。
+  // 実機で「速い／遅い」を見比べて決めるための調整用。
+  const fall = parseFloat(q.get("fall"));
+  if (Number.isFinite(fall) && fall > 0) {
+    c.fallMinMs = fall;
+    c.fallMaxMs = Math.round(fall * 1.58);
     touched = true;
   }
 

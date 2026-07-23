@@ -20,7 +20,10 @@ window.Bloom = (function () {
     const startY   = -160;                                 // SVG ビューポート上端の外側
 
     // 落下パラメータ（花ごとにランダム）
-    const duration = 2400 + Math.random() * 1800;          // 2.4〜4.2秒
+    const _c      = window.DISPLAY_CONFIG || {};
+    const dMin    = _c.fallMinMs != null ? _c.fallMinMs : 6000;
+    const dMax    = _c.fallMaxMs != null ? _c.fallMaxMs : 9500;
+    const duration = dMin + Math.random() * Math.max(0, dMax - dMin);
     const swayAmp  = 28 + Math.random() * 48;              // 左右揺れ幅（SVG単位）
     const swayFreq = 0.65 + Math.random() * 0.55;         // 揺れの周期
 
