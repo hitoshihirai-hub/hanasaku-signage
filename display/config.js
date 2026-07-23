@@ -73,7 +73,11 @@ window.DISPLAY_CONFIG = {
   // ── 以下、7/23 STB実機テスト用の既定値（URLクエリで上書きする） ──
   seedCount: 18,     // dummy モードの初期投入数
   style:     "flat", // 花の描画: "flat"=Sakana調の線画＋フラット塗り（既定） / "rich"=旧グラデ
-  sway:      true,   // 着地後の永続ゆらぎ
+  // 着地後の永続ゆらぎ。着地した花が「ずっと」動き続けるため、
+  // 数が増えるほど常時GPU負荷が積み上がる。本番機は Android 7.1.2 の
+  // 非力なSTB（実測 n=100で8fps）と確定したので既定でオフ。
+  // 比較したいときは ?sway=1。
+  sway:      false,
   bgEffects: true,   // 背景の feTurbulence フィルタ
   diag:      false,  // 診断オーバーレイ
 };
@@ -117,7 +121,8 @@ window.DISPLAY_CONFIG = {
   const style = q.get("style");
   if (style === "flat" || style === "rich") { c.style = style; touched = true; }
 
-  if (q.get("sway") === "0") { c.sway      = false; touched = true; }
+  if (q.get("sway") === "0") { c.sway = false; touched = true; }
+  if (q.get("sway") === "1") { c.sway = true;  touched = true; }
   if (q.get("fx")   === "0") { c.bgEffects = false; touched = true; }
   if (q.get("diag") === "1") { touched = true; }
 
